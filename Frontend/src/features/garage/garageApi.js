@@ -1,6 +1,6 @@
 import { apiRequest } from "@/lib/api";
 import { setGarageMessage, setGuestItems } from "./garageSlice";
-import { clearGuestGarage, readGuestGarage } from "./garageStorage";
+import { clearGuestGarage, readGuestGarage, writeGuestGarage } from "./garageStorage";
 
 export const mergeGuestGarage = async (token, dispatch) => {
   const items = readGuestGarage();

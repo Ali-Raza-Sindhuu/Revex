@@ -1,15 +1,14 @@
 import app from "./app.js";
-import pool from "./config/database.js";
+import { connectDatabase, disconnectDatabase } from "./config/database.js";
 
 const port = Number(process.env.PORT) || 4000;
 
-const server = app.listen(port, () => {
-  console.log(`REVEX API listening on port ${port}`);
-});
+await connectDatabase();
+const server = app.listen(port, () => console.log(`REVEX API listening on port ${port}`));
 
 const shutdown = async () => {
   server.close(async () => {
-    await pool.end();
+    await disconnectDatabase();
     process.exit(0);
   });
 };

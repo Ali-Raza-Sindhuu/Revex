@@ -1,26 +1,25 @@
-
 const Field = ({ id, label, icon: Icon, error, endAdornment, ...inputProps }) => (
   <div>
-    <label htmlFor={id} className="mb-1.5 block text-xs font-medium text-neutral-700">
+    <label htmlFor={id} className="mb-2 block text-[11px] font-semibold tracking-[0.15em] text-white/40 uppercase">
       {label}
     </label>
     <div
-      className={`group flex h-12 items-center gap-3 rounded-xl border bg-neutral-50 px-4 transition focus-within:border-[#f05a1a] focus-within:bg-white focus-within:ring-4 focus-within:ring-[#f05a1a]/10 ${
-        error ? "border-red-400" : "border-neutral-200"
+      className={`group flex items-center gap-3 border-b bg-transparent pb-2.5 transition focus-within:border-[#f05a1a] ${
+        error ? "border-red-400/70" : "border-white/15"
       }`}
     >
       {Icon && (
-        <Icon className="size-4 shrink-0 text-neutral-400 transition-colors group-focus-within:text-[#f05a1a]" />
+        <Icon className="size-4 shrink-0 text-white/30 transition-colors group-focus-within:text-[#f05a1a]" />
       )}
       <input
         id={id}
         aria-invalid={Boolean(error)}
-        className="h-full min-w-0 flex-1 bg-transparent text-sm text-neutral-900 outline-none placeholder:text-neutral-400"
+        className="h-full min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-white/25"
         {...inputProps}
       />
       {endAdornment}
     </div>
-    {error && <p className="mt-1.5 text-[11px] text-red-500">{error}</p>}
+    {error && <p className="mt-1.5 text-[11px] text-red-400">{error}</p>}
   </div>
 );
 

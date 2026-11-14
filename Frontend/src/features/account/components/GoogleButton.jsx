@@ -1,4 +1,3 @@
-
 import { GoogleLogin } from "@react-oauth/google";
 
 const GoogleIcon = () => (
@@ -18,12 +17,12 @@ const GoogleButton = ({ onCredential, onError, label = "Continue with Google" })
         <button
           type="button"
           disabled
-          className="flex h-12 w-full cursor-not-allowed items-center justify-center gap-3 rounded-xl border border-neutral-200 bg-white text-xs font-semibold text-neutral-400"
+          className="flex h-12 w-full cursor-not-allowed items-center justify-center gap-3 border border-white/15 bg-white/5 text-xs font-semibold text-white/30"
         >
           <GoogleIcon />
           {label}
         </button>
-        <p role="status" className="mt-2 text-center text-[11px] text-neutral-500">
+        <p role="status" className="mt-2 text-center text-[11px] text-white/40">
           Google sign-in is not configured.
         </p>
       </div>
@@ -48,7 +47,7 @@ const GoogleButton = ({ onCredential, onError, label = "Continue with Google" })
               : "Google sign-in could not be completed. Please try again.",
           );
         }}
-        theme="outline"
+        theme="filled_black"
         size="large"
         shape="rectangular"
         text={label === "Sign up with Google" ? "signup_with" : "continue_with"}
@@ -59,10 +58,10 @@ const GoogleButton = ({ onCredential, onError, label = "Continue with Google" })
 };
 
 const OrDivider = () => (
-  <div className="my-5 flex items-center gap-3 text-[11px] text-neutral-400">
-    <span className="h-px flex-1 bg-neutral-200" />
+  <div className="my-5 flex items-center gap-3 text-[11px] text-white/30">
+    <span className="h-px flex-1 bg-white/15" />
     or use email
-    <span className="h-px flex-1 bg-neutral-200" />
+    <span className="h-px flex-1 bg-white/15" />
   </div>
 );
 

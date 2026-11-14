@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SectionHeading from "@/shared/SectionHeading";
+import { Reveal } from "@/shared/motion";
 import { btn } from "@/shared/styles";
 import carImage from "@/assets/sample_001.png";
 
@@ -17,15 +18,15 @@ const InspectionSection = () => (
     <div className="mx-auto max-w-[1400px]">
       <div className="grid items-end gap-8 lg:grid-cols-2">
         <SectionHeading id="inspection-title" tone="dark" eyebrow="The certified programme" eyebrowClassName="text-white/60" lead={["Confidence starts"]} muted={["with the details."]} />
-        <p className="max-w-md text-sm leading-relaxed text-white/60 lg:ml-auto">A polished finish tells only part of the story. Our certified programme puts condition, documentation and a clear handover at the centre of your decision. Home delivery is available within 100 km.</p>
+        <Reveal as="p" delay={0.15} className="max-w-md text-sm leading-relaxed text-white/60 lg:ml-auto">A polished finish tells only part of the story. Our certified programme puts condition, documentation and a clear handover at the centre of your decision. Home delivery is available within 100 km.</Reveal>
       </div>
-      <div className="mt-12 overflow-hidden rounded-3xl bg-white p-4 md:p-6">
+      <Reveal y={32} delay={0.1} className="mt-12 overflow-hidden rounded-3xl bg-white p-4 md:p-6">
         <dl className="grid gap-6 border-b border-neutral-200 pb-6 sm:grid-cols-3">
-          {stats.map(({ value, unit, label }) => (
-            <div key={label} className="flex flex-col-reverse">
+          {stats.map(({ value, unit, label }, index) => (
+            <Reveal key={label} as="div" y={14} delay={0.1 + index * 0.08} className="flex flex-col-reverse">
               <dt className="mt-2 text-xs text-neutral-600">{label}</dt>
               <dd className="text-3xl font-bold tracking-tight text-neutral-950 md:text-4xl">{value}<span className="ml-2 text-sm text-[#f05a1a]">{unit}</span></dd>
-            </div>
+            </Reveal>
           ))}
         </dl>
         <div className="mt-6 grid gap-8 lg:grid-cols-2 lg:items-center">
@@ -39,7 +40,7 @@ const InspectionSection = () => (
             <Button asChild className={`mt-7 ${btn.dark}`}><Link to="/contact?enquiry=inspection">Ask about certification<ArrowRight aria-hidden="true" className="size-4" /></Link></Button>
           </div>
         </div>
-      </div>
+      </Reveal>
     </div>
   </section>
 );

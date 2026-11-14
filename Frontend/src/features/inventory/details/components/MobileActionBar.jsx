@@ -11,7 +11,7 @@ const MobileActionBar = ({ car, onReserve, actionStatus = "" }) => {
   const rental = car.listingType === "rent";
   const actions = getCarActions(car, {
     onReserve,
-    onTestDrive: (event) => openEnquiry(event, { message: "I'd like to book a test drive." }),
+    onTestDrive: (event) => openEnquiry(event, { message: `I'd like to request a test drive for the ${car.year} ${car.make} ${car.model}.`, enquiryType: "test_drive" }),
   });
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const MobileActionBar = ({ car, onReserve, actionStatus = "" }) => {
             {actions.secondary && <Button type="button" onClick={actions.secondary.onClick} className="h-10 rounded-lg border border-neutral-200 bg-white px-2 text-[10px] font-semibold text-neutral-900">{actions.secondary.label}</Button>}
             <Button type="button" disabled={actions.primary.disabled} onClick={actions.primary.onClick} className="h-10 rounded-lg bg-[#f05a1a] px-3 text-xs font-semibold text-white hover:bg-[#d94e14] focus-visible:ring-[#f05a1a] disabled:cursor-not-allowed disabled:opacity-50">{actions.primary.label}{!actions.primary.disabled && <ArrowRight aria-hidden="true" className="size-3.5" />}</Button>
           </div>
-          {!actions.primary.disabled && <p className="mt-1 text-[9px] text-neutral-500">Held only once payment is complete.</p>}
+          {!actions.primary.disabled && <p className="mt-1 text-[9px] text-neutral-500">{rental ? "Dates checked at checkout." : "Saved to your Garage shortlist."}</p>}
           {actionStatus && <p role="status" className="mt-1 max-w-[190px] text-right text-[9px] text-neutral-600">{actionStatus}</p>}
         </div>
       </div>

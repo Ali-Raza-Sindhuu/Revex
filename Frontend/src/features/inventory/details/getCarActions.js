@@ -7,12 +7,12 @@ export const getCarActions = (car, { onReserve, onTestDrive } = {}) => {
   }
   if (car.listingType === "rent") {
     return {
-      primary: { label: "Reserve these dates", disabled: false, onClick: onReserve },
+      primary: { label: "Add rental to Garage", disabled: false, onClick: onReserve },
       secondary: null,
     };
   }
   return {
-    primary: { label: "Reserve this car", disabled: false, onClick: onReserve },
+    primary: { label: "Add to Garage", disabled: false, onClick: onReserve },
     secondary: { label: "Book a test drive", disabled: false, onClick: onTestDrive },
   };
 };

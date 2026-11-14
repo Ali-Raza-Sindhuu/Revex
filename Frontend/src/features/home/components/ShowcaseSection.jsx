@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import img1 from "@/assets/sample_01.png";
 import img2 from "@/assets/sample_001.png";
+import porsche from "@/assets/porsche-911.png";
+import bmw from "@/assets/bmw-i8.png";
 import showcase from "@/assets/showcase.png";
 import CarouselArrows from "@/shared/CarouselArrows";
 import { Reveal } from "@/shared/motion";
@@ -10,17 +12,17 @@ import { btn, focusRing } from "@/shared/styles";
 import VehicleImage from "@/components/shared/VehicleImage";
 import { useCarousel } from "@/shared/useCarousel";
 
-const stats = [
-  { value: "450", unit: "HP", label: "Maximum Power" },
-  { value: "3.8", unit: "s", label: "0–100 km/h" },
-  { value: "580", unit: "km", label: "Estimated Range" },
+const highlights = [
+  { title: "Explore", description: "Compare vehicles" },
+  { title: "Choose", description: "Buy or rent" },
+  { title: "Get moving", description: "Book online" },
 ];
 
 const slides = [
   { id: 1, image: img1, alt: "Grey convertible sports car, front three-quarter view" },
   { id: 2, image: img2, alt: "Close-up of the sports car headlight and bonnet" },
-  { id: 3, image: "/image/showcase/car-3.jpg", alt: "Sports car side profile" },
-  { id: 4, image: "/image/showcase/car-4.jpg", alt: "Sports car interior" },
+  { id: 3, image: porsche, alt: "Porsche 911" },
+  { id: 4, image: bmw, alt: "BMW i8" },
 ];
 
 // How far down the section the background photo reaches
@@ -60,14 +62,12 @@ const ShowcaseSection = () => {
         >
           <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
             <div>
-              <Eyebrow>Luxury</Eyebrow>
+              <Eyebrow>Find your fit</Eyebrow>
               <h3 className="mt-2 text-xl font-bold tracking-tight text-neutral-950">
-                Built for the road.
+                Your next move starts here.
               </h3>
               <p className="mt-1 text-xs text-neutral-600">
-                <span className="font-semibold text-neutral-950">567</span>{" "}
-                vehicles available now, starting at{" "}
-                <span className="font-semibold text-neutral-950">$89,900</span>
+                Browse vehicles to buy or rent and compare the details that matter.
               </p>
               <Link to="/inventory" className={`group mt-5 ${btn.primary}`}>
                 Discover
@@ -75,15 +75,11 @@ const ShowcaseSection = () => {
               </Link>
             </div>
 
-            <dl className="grid grid-cols-3 gap-6 lg:gap-20 lg:pr-4 lg:pt-3">
-              {stats.map(({ value, unit, label }) => (
-                <div key={label} className="flex flex-col-reverse">
-                  <dt className="mt-1 text-xs text-neutral-600">{label}</dt>
-                  <dd className="text-2xl font-bold tracking-tight text-neutral-950 md:text-3xl">
-                    {value}
-                    {unit === "s" ? "" : " "}
-                    <span className="text-[#f05a1a]">{unit}</span>
-                  </dd>
+            <dl className="grid grid-cols-3 gap-4 lg:gap-10 lg:pr-4 lg:pt-3">
+              {highlights.map(({ title, description }) => (
+                <div key={title}>
+                  <dt className="text-2xl font-bold tracking-tight text-[#f05a1a] md:text-3xl">{title}</dt>
+                  <dd className="mt-1 text-xs text-neutral-600">{description}</dd>
                 </div>
               ))}
             </dl>

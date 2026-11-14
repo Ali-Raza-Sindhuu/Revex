@@ -21,6 +21,22 @@ export const rentalDayCount = (startDate, endDate) => {
 export const rentalRangesOverlap = (first, second) =>
   first.startDate <= second.endDate && first.endDate >= second.startDate;
 
+export const nextAvailableRentalStart = (startDate, rentalDays, bookedRanges) => {
+  let candidate = parseUtcDate(startDate);
+  if (!candidate || !Number.isInteger(rentalDays) || rentalDays < 1) return null;
+  for (const range of bookedRanges) {
+    const candidateEnd = new Date(candidate.getTime() + (rentalDays - 1) * DAY_MS);
+    const candidateStartText = candidate.toISOString().slice(0, 10);
+    const candidateEndText = candidateEnd.toISOString().slice(0, 10);
+    if (range.startDate <= candidateEndText && range.endDate >= candidateStartText) {
+      const rangeEnd = parseUtcDate(range.endDate);
+      if (!rangeEnd) continue;
+      candidate = new Date(rangeEnd.getTime() + DAY_MS);
+    }
+  }
+  return candidate.toISOString().slice(0, 10);
+};
+
 export const validateRentalDates = ({ startDate, endDate, today = new Date() }) => {
   const start = parseUtcDate(startDate);
   const end = parseUtcDate(endDate);

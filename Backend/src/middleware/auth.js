@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { AppError } from "../lib/errors.js";
-import pool from "../config/database.js";
+import User from "../models/User.js";
 
 export const authenticate = async (req, res, next) => {
   const authorization = req.get("authorization") || "";
@@ -19,12 +19,9 @@ export const authenticate = async (req, res, next) => {
     return next(new AppError(401, "Authentication required"));
   }
 
-  const [rows] = await pool.execute(
-    "SELECT UNIX_TIMESTAMP(password_changed_at) AS changed_at FROM users WHERE id = ? LIMIT 1",
-    [payload.sub],
-  );
-  if (!rows.length) return next(new AppError(401, "Authentication required"));
-  const changedAt = rows[0].changed_at === null ? null : Number(rows[0].changed_at);
+  const user = await User.findById(payload.sub).select("password_changed_at").lean();
+  if (!user) return next(new AppError(401, "Authentication required"));
+  const changedAt = user.password_changed_at ? Math.floor(new Date(user.password_changed_at).getTime() / 1000) : null;
   if (changedAt !== null && (!payload.iat || payload.iat < changedAt)) {
     return next(new AppError(401, "Authentication required"));
   }

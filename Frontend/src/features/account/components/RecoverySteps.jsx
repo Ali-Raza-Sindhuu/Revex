@@ -12,22 +12,22 @@ const RecoverySteps = ({ current }) => (
           <span
             className={`flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${
               isDone
-                ? "bg-[#f05a1a] text-white"
+                ? "bg-[#f05a1a] text-neutral-950"
                 : isActive
                   ? "border-2 border-[#f05a1a] text-[#f05a1a]"
-                  : "border border-neutral-300 text-neutral-400"
+                  : "border border-white/20 text-white/35"
             }`}
           >
             {isDone ? <Check className="size-3" /> : index + 1}
           </span>
           <span
             className={`hidden text-[11px] sm:block ${
-              isDone || isActive ? "text-neutral-900" : "text-neutral-400"
+              isDone || isActive ? "text-white" : "text-white/35"
             }`}
           >
             {label}
           </span>
-          {index < recoverySteps.length - 1 && <span className="h-px flex-1 bg-neutral-200" />}
+          {index < recoverySteps.length - 1 && <span className="h-px flex-1 bg-white/15" />}
         </li>
       );
     })}

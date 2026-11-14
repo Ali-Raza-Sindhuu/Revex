@@ -1,17 +1,12 @@
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Linkedin } from "lucide-react";
+import { Reveal } from "@/shared/motion";
 
-const XLogo = ({ className }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}>
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-  </svg>
-);
-
+// Replace these href values with REVEX's profile URLs.
 const socialLinks = [
   { label: "Instagram", icon: Instagram, href: "#" },
   { label: "Facebook", icon: Facebook, href: "#" },
   { label: "LinkedIn", icon: Linkedin, href: "#" },
-  { label: "X", icon: XLogo, href: "#" },
 ];
 
 const linkGroups = [
@@ -29,7 +24,10 @@ const linkGroups = [
   },
 ];
 
-const legalLinks = ["Privacy Policy", "Terms & Conditions"];
+const legalLinks = [
+  { label: "Privacy Policy", to: "/privacy" },
+  { label: "Terms & Conditions", to: "/terms" },
+];
 
 const pageLinks = {
   "Our Story": "/about",
@@ -39,8 +37,11 @@ const pageLinks = {
   "Find a Dealer": "/contact",
   "Models": "/inventory",
   "Browse by Category": "/inventory",
-  "Technology": "/services",
-  "Performance": "/inventory",
+  "Technology": "/innovation",
+  "Performance": "/stories",
+  "Vehicle Configurator": "/configurator",
+  "Stories": "/stories",
+  "Innovation": "/innovation",
 };
 
 const focusRing =
@@ -61,7 +62,7 @@ const Footer = () => (
       <div className="mt-10 border-t border-white/10 pt-10">
         <div className="grid gap-10 lg:grid-cols-[1fr_auto]">
           {/* Brand */}
-          <div>
+          <Reveal y={16}>
             <Link
               to="/"
               className={`rounded text-xl font-medium tracking-tight text-white ${focusRing}`}
@@ -75,23 +76,26 @@ const Footer = () => (
             <div className="mt-8 flex items-center gap-3">
               <p className="text-[11px] font-semibold text-white">Follow us on</p>
               <div className="flex gap-2">
-                {socialLinks.map(({ label, icon: Icon }) => (
-                  <span
+                {socialLinks.map(({ label, icon: Icon, href }) => (
+                  <a
                     key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     aria-label={label}
                     className={`flex size-7 items-center justify-center rounded-sm border border-white/20 text-white transition-colors hover:bg-white/10 ${focusRing}`}
                   >
                     <Icon className="size-3.5" />
-                  </span>
+                  </a>
                 ))}
               </div>
             </div>
-          </div>
+          </Reveal>
 
           {/* Link groups */}
           <div className="grid grid-cols-2 gap-x-10 gap-y-10 sm:grid-cols-3 lg:flex lg:gap-x-20 xl:gap-x-28">
-            {linkGroups.map(({ title, links }) => (
-              <div key={title}>
+            {linkGroups.map(({ title, links }, index) => (
+              <Reveal key={title} y={16} delay={index * 0.08}>
                 <h3 className="text-xs font-semibold text-white">{title}</h3>
                 <ul className="mt-5 flex flex-col gap-3.5">
                   {links.map((link) => (
@@ -100,7 +104,7 @@ const Footer = () => (
                     </li>
                   ))}
                 </ul>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -109,13 +113,14 @@ const Footer = () => (
         <div className="mt-12 flex flex-col gap-3 border-y border-white/10 py-6 text-xs text-white sm:flex-row sm:items-center sm:justify-between">
           <p className="font-medium">2026 © REVEX. All rights reserved.</p>
           <div className="flex gap-6 text-white/70">
-            {legalLinks.map((link) => (
-              <span
-                key={link}
+            {legalLinks.map(({ label, to }) => (
+              <Link
+                key={label}
+                to={to}
                 className={`rounded transition-colors hover:text-white ${focusRing}`}
               >
-                {link}
-              </span>
+                {label}
+              </Link>
             ))}
           </div>
         </div>

@@ -30,9 +30,17 @@ const PriceCalculator = ({ car, onRentalDatesChange }) => {
     const controller = new AbortController();
     setAvailabilityMessage("Checking availability…");
     apiRequest(`/api/cars/${encodeURIComponent(car.id)}/availability?from=${pickup}&to=${returnDate}`, { signal: controller.signal })
-      .then(({ bookedRanges = [] }) => {
+      .then(({ bookedRanges = [], nextAvailableDate }) => {
         const unavailable = bookedRanges.some((range) => range.startDate <= returnDate && range.endDate >= pickup);
-        setAvailabilityMessage(unavailable ? "These dates overlap with a confirmed booking." : "These dates are available to request.");
+        if (unavailable) {
+          const availableDate = new Date(`${nextAvailableDate || ""}T00:00:00`);
+          const label = Number.isNaN(availableDate.getTime())
+            ? nextAvailableDate
+            : new Intl.DateTimeFormat(undefined, { dateStyle: "long" }).format(availableDate);
+          setAvailabilityMessage(label ? `These dates are reserved. You can start renting from ${label}.` : "These dates are reserved. Choose another range.");
+        } else {
+          setAvailabilityMessage("These dates are available to request.");
+        }
       })
       .catch((error) => {
         if (error.name !== "AbortError") setAvailabilityMessage(`Availability could not be checked: ${error.message}`);

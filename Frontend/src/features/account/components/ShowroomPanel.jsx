@@ -1,71 +1,62 @@
 import { Link } from "react-router-dom";
-import { Star } from "lucide-react";
-import Gauge from "@/features/account/components/Gauge";
+import { motion } from "framer-motion";
 import carImage from "@/assets/Hero_image.png";
 
-const ShowroomPanel = ({ word, eyebrow, headline }) => (
-  <aside className="relative h-64 overflow-hidden bg-neutral-950 sm:h-80 lg:h-auto lg:min-h-svh">
-    <style>{`@keyframes roadMove{from{background-position:0 0}to{background-position:-80px 0}}`}</style>
+const EASE = [0.22, 1, 0.36, 1];
 
-    {/* Lighting */}
-    <div className="absolute inset-0 bg-linear-to-b from-white/40 via-white/10 to-transparent blur-2xl [clip-path:polygon(8%_0,26%_0,16%_60%,-8%_60%)]" />
-    <div className="absolute inset-0 bg-linear-to-b from-[#f05a1a]/70 via-[#f05a1a]/25 to-transparent blur-2xl [clip-path:polygon(70%_0,92%_0,80%_75%,45%_75%)]" />
-    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[radial-gradient(ellipse_at_50%_100%,rgba(240,90,26,0.45),transparent_70%)]" />
+// Editorial image panel - full-bleed photography with a duotone/gradient
+// treatment (Bentley/Aston Martin style) instead of a boxed hero graphic.
+const ShowroomPanel = ({ word, eyebrow, headline }) => (
+  <aside className="relative h-[34vh] w-full shrink-0 overflow-hidden bg-neutral-950 lg:h-full lg:w-[56%]">
+    <motion.img
+      src={carImage}
+      alt=""
+      initial={{ scale: 1.08, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ duration: 1.3, ease: EASE }}
+      className="absolute inset-0 size-full object-cover object-center"
+    />
+
+    {/* Duotone + legibility gradients - no blobs, no grid, just tone */}
+    <div className="absolute inset-0 bg-neutral-950/50 mix-blend-multiply" />
+    <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/30 to-transparent" />
+    <div className="absolute inset-0 bg-gradient-to-r from-neutral-950/70 via-transparent to-transparent lg:to-neutral-950/10" />
+    <div className="pointer-events-none absolute -bottom-20 -left-20 size-64 rounded-full bg-[#f05a1a]/20 blur-[100px]" />
 
     {/* Logo */}
     <Link
       to="/"
       aria-label="REVEX home"
-      className="absolute top-5 left-5 z-30 text-lg font-extrabold tracking-tight text-white lg:top-10 lg:left-12"
+      className="absolute top-6 left-6 z-10 text-xs font-bold tracking-[0.35em] text-white sm:top-8 sm:left-10"
     >
       REVEX
     </Link>
 
-    {/* Headline (desktop) */}
-    <div className="absolute top-28 left-12 z-30 hidden max-w-xs lg:block">
-      <p className="flex items-center gap-2 text-[10px] font-semibold tracking-[0.2em] text-white/70 uppercase">
-        <span className="size-1.5 rounded-full bg-[#f05a1a]" />
-        {eyebrow}
-      </p>
-      <p className="mt-4 text-4xl leading-[1.1] font-semibold tracking-tight text-white">
-        {headline}
-      </p>
-    </div>
-
-    {/* Outlined word behind the car */}
+    {/* Vertical placard label - the one playful detail, borrowed from museum/
+        gallery-style automotive sites rather than a SaaS "HUD" widget */}
     <p
       aria-hidden="true"
-      className="absolute inset-x-0 top-[22%] z-10 text-center text-[22vw] leading-none font-extrabold tracking-tighter text-transparent uppercase select-none [-webkit-text-stroke:1.5px_rgba(255,255,255,0.35)] sm:text-[18vw] lg:top-[36%] lg:text-[9.5vw]"
+      className="absolute top-1/2 right-6 z-10 hidden -translate-y-1/2 text-[11px] font-semibold tracking-[0.5em] text-white/30 uppercase lg:block"
+      style={{ writingMode: "vertical-rl" }}
     >
       {word}
     </p>
 
-    {/* Car */}
-    <img
-      src={carImage}
-      alt=""
-      className="absolute bottom-0 left-1/2 z-20 w-[78%] max-w-[440px] -translate-x-1/2 lg:bottom-[9%] lg:left-[-4%] lg:w-[108%] lg:max-w-none lg:translate-x-0"
-    />
-
-    {/* Road */}
-    <div className="absolute inset-x-0 bottom-0 z-10 hidden h-[9%] bg-neutral-900 lg:block">
-      <div
-        className="absolute inset-x-0 top-1/2 h-[3px] animate-[roadMove_1.2s_linear_infinite] motion-reduce:animate-none"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(90deg, rgba(255,255,255,0.55) 0 40px, transparent 40px 80px)",
-        }}
-      />
-    </div>
-
-    {/* HUD (desktop) */}
-    <div className="absolute top-10 right-10 z-30 hidden flex-col items-end gap-3 lg:flex">
-      <Gauge />
-      <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] text-white/80 backdrop-blur-md">
-        <Star className="size-3 fill-[#f05a1a] text-[#f05a1a]" />
-        4.9 verified reviews
-      </div>
-    </div>
+    {/* Headline, bottom-anchored, serif for contrast against the sans UI */}
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
+      className="absolute inset-x-0 bottom-0 z-10 p-6 sm:p-10 lg:p-14"
+    >
+      <p className="mb-3 flex items-center gap-2 text-[10px] font-semibold tracking-[0.3em] text-white/55 uppercase">
+        <span className="h-px w-6 bg-[#f05a1a]" />
+        {eyebrow}
+      </p>
+      <p className="max-w-md font-serif text-3xl leading-[1.05] text-white sm:text-4xl lg:text-5xl">
+        {headline}
+      </p>
+    </motion.div>
   </aside>
 );
 

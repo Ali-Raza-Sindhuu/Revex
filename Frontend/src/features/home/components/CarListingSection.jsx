@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Cog, Cylinder, Fuel, Gauge } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Cog, Cylinder, Fuel, Gauge } from "lucide-react";
 import { apiRequest } from "@/lib/api";
 import { mapCar } from "@/features/inventory/data/apiCars";
 import VehicleImage from "@/components/shared/VehicleImage";
 import { Reveal } from "@/shared/motion";
 import SectionHeading from "@/shared/SectionHeading";
-import { focusRing } from "@/shared/styles";
+import { btn, focusRing } from "@/shared/styles";
 import FavouriteButton from "@/features/inventory/components/FavouriteButton";
 
 const filterTabs = ["All", "New", "Used"];
@@ -104,19 +104,21 @@ const CarListingSection = () => {
   const [activeTab, setActiveTab] = useState("All");
   const [cars, setCars] = useState([]);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const controller = new AbortController();
-    apiRequest("/api/cars?page=1&pageSize=6&sort=newest", { signal: controller.signal })
-      .then(({ items }) => setCars(items.map(mapCar)))
+    apiRequest("/api/cars?page=1&pageSize=100&sort=newest", { signal: controller.signal })
+      .then(({ items = [] }) => setCars(items.map(mapCar)))
       .catch((requestError) => {
         if (requestError.name !== "AbortError") setError(requestError.message);
-      });
+      })
+      .finally(() => { if (!controller.signal.aborted) setIsLoading(false); });
     return () => controller.abort();
   }, []);
 
-  const visibleCars =
-    activeTab === "All" ? cars : cars.filter((car) => car.condition === activeTab.toLowerCase());
+  const filteredCars = activeTab === "All" ? cars : cars.filter((car) => car.condition === activeTab.toLowerCase());
+  const visibleCars = filteredCars.slice(0, 6);
 
   return (
     <section
@@ -159,11 +161,14 @@ const CarListingSection = () => {
 
         {/* Keyed by tab so the cards animate in again when the filter changes */}
         <div className="mt-10 grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
-          {error && <p role="alert" className="sm:col-span-2 lg:col-span-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">Unable to load cars: {error}</p>}
-          {visibleCars.map((car, index) => (
+          {error && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 sm:col-span-2 lg:col-span-3">Unable to load vehicles: {error}</p>}
+          {isLoading && !error && <p role="status" className="rounded-xl border border-neutral-200 bg-neutral-50 p-5 text-sm text-neutral-500 sm:col-span-2 lg:col-span-3">Loading available vehicles…</p>}
+          {!isLoading && !error && visibleCars.map((car, index) => (
             <CarCard key={`${activeTab}-${car.id}`} car={car} index={index} />
           ))}
+          {!isLoading && !error && visibleCars.length === 0 && <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-6 text-sm text-neutral-600 sm:col-span-2 lg:col-span-3">No {activeTab.toLowerCase()} vehicles are available right now. Try another category or browse the full inventory.</div>}
         </div>
+        {!isLoading && !error && visibleCars.length > 0 && <div className="mt-8 flex justify-center"><Link to="/inventory" className={`group ${btn.dark}`}>View all vehicles<ArrowRight className="size-4 transition-transform group-hover:translate-x-1" /></Link></div>}
       </div>
     </section>
   );

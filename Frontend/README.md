@@ -1,6 +1,6 @@
 # REVEX frontend
 
-REVEX is a React and Vite car marketplace prototype. The interface uses Tailwind CSS v4, shadcn-style UI components, React Router, Lucide icons, and sample vehicle data.
+REVEX is a React and Vite car marketplace frontend. It uses Tailwind CSS v4, React Router, Redux Toolkit, and a MongoDB-backed Express API.
 
 ## Run locally
 
@@ -9,28 +9,30 @@ npm install
 npm run dev
 ```
 
-For Google sign-in, copy `.env.example` to `.env.local` and set `VITE_GOOGLE_CLIENT_ID` to the same OAuth client ID configured as `GOOGLE_CLIENT_ID` in the backend. Restart Vite after changing environment variables.
+Copy `.env.example` to `.env.local` for local development; it points to the API at `http://localhost:4000`. Set `VITE_API_URL` to the deployed API origin for production. Google sign-in needs `VITE_GOOGLE_CLIENT_ID` to match `GOOGLE_CLIENT_ID` in the backend. Restart Vite after changing environment variables. For Vercel, set the project Root Directory to `Frontend`; the SPA rewrite in `vercel.json` enables direct links to client-side routes.
 
 Build the production bundle with `npm run build`. Preview it with `npm run preview`. Run commands from `Frontend/`. A production host must serve `index.html` for unknown paths so React Router can handle direct links.
 
 ## Pages
 
-`/` Home · `/inventory` Inventory · `/inventory/:id` Car Details · `/about` About · `/services` Services · `/contact` Contact · `/login` Login · `/signup` Signup · `/forgot-password` Forgot Password · `/reset-password` Reset Password · `/verify-email` Verify Email. Unknown paths show a 404 page.
+`/` Home · `/inventory` Inventory · `/inventory/:id` Car Details · `/about` About · `/services` Services · `/stories` Stories · `/innovation` Innovation · `/configurator` Vehicle Configurator · `/contact` Contact · `/login` Login · `/signup` Signup · `/forgot-password` Forgot Password · `/reset-password` Reset Password · `/verify-email` Verify Email. Unknown paths show a 404 page.
 
 ## Structure
 
 - `src/app/router.jsx`: routes.
 - `src/components/layout/`: shared Navbar, Footer, and scrolling.
 - `src/components/shared/` and `src/components/ui/`: reusable UI.
-- `src/features/`: page components and feature data.
+- `src/pages/`: route-level page components grouped by area.
+- `src/features/`: page sections, feature components, data adapters, and client state.
+- `src/lib/api.js`: shared frontend-to-backend request client.
 - `src/styles/globals.css`: Tailwind entry and theme.
 - `src/assets/`: bundled images.
 - `public/`: files served at absolute URLs, including the favicon.
 
 ## Sample data and images
 
-`src/features/inventory/data/cars.js` contains the inventory and `carDetails.js` adds illustrative details keyed by car ID. Replace the sample data at this boundary with API responses that preserve the same field names, or map API fields into that shape before rendering. The About timeline, team, contact details, service terms, and review statistics are illustrative too.
+Inventory, account, garage, contact, and newsletter flows use the backend API. The About timeline, team, contact details, service terms, and review statistics are illustrative content.
 
-Bundled images are imported from `src/assets/`. `src/features/inventory/data/carImages.js` is the source of truth for inventory card and detail-gallery images; add vehicle image imports and mappings there rather than using public-root image paths. Missing vehicle photos show a neutral placeholder.
+Bundled images are imported from `src/assets/`. The backend's inventory export and image upload scripts use `src/features/inventory/data/cars.js`, `carDetails.js`, and `carImages.js` as seed-source files. The running pages display inventory data returned by the API.
 
-Contact and vehicle enquiry forms validate locally only. Newsletter, Google sign-in, and policy links also need real integration or content before launch. See `PLACEHOLDERS.md` for replacement points.
+Contact enquiries and newsletter subscriptions are saved through the API. Rental checkout uses Stripe Checkout; the return page verifies the session with the API and retries temporary connection failures. See `PLACEHOLDERS.md` for remaining prototype content.

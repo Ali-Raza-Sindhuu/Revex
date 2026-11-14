@@ -28,10 +28,10 @@ const HeroSection = () => {
           size="hero"
           tone="dark"
           delay={0.1}
-          eyebrow="Built for the next mile"
+          eyebrow="Find your next drive"
           eyebrowClassName="text-white/85"
-          lead={["Made for", "an amazing", "adventure"]}
-          body="Discover a new era of cars designed for performance, technology, and unique mobility."
+          lead={["Made for", "the road", "ahead."]}
+          body="Explore vehicles to buy or rent, compare the details, and choose where your next drive takes you."
           className="max-w-xl"
         />
       </div>
@@ -55,7 +55,7 @@ const HeroSection = () => {
               <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
             <Link to="/contact" className={btn.outline}>
-              Book a test drive
+              Talk to our team
             </Link>
           </div>
 

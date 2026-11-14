@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, ChevronDown, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import DarkSelect from "./DarkSelect";
 
 export const DEFAULT_FILTERS = {
   bodyTypes: [],
@@ -77,7 +78,7 @@ const CheckboxList = ({ idPrefix, options, selected, onToggle }) => (
             id={`${idPrefix}-${option}`}
             checked={selected.includes(option)}
             onChange={() => onToggle(option)}
-            className="size-3.5 cursor-pointer rounded accent-[#f05a1a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f05a1a]"
+            className="size-4 cursor-pointer rounded accent-[#f05a1a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f05a1a]"
           />
           {option}
         </label>
@@ -209,19 +210,14 @@ const FilterGroups = ({ idPrefix, filters, onChange }) => {
         <label htmlFor={`${idPrefix}-mileage-max`} className="sr-only">
           Maximum mileage
         </label>
-        <select
+        <DarkSelect
           id={`${idPrefix}-mileage-max`}
           value={filters.mileageMax}
-          onChange={(event) => onChange({ mileageMax: event.target.value })}
-          className={`${inputClass} cursor-pointer`}
-        >
-          <option value="">Any mileage</option>
-          {MILEAGE_LIMITS.map((limit) => (
-            <option key={limit} value={limit}>
-              Up to {limit.toLocaleString()} km
-            </option>
-          ))}
-        </select>
+          onChange={(mileageMax) => onChange({ mileageMax })}
+          placeholder="Any mileage"
+          options={MILEAGE_LIMITS.map((limit) => ({ value: String(limit), label: `Up to ${limit.toLocaleString()} km` }))}
+          variant="light"
+        />
       </FilterGroup>
 
       <FilterGroup id={`${idPrefix}-colour`} title="Colour">
@@ -250,7 +246,7 @@ const FilterGroups = ({ idPrefix, filters, onChange }) => {
 };
 
 const SidebarHeader = ({ activeCount, onClearAll }) => (
-  <div className="flex items-center justify-between pb-4">
+  <div className="flex items-center justify-between">
     <h2 className="text-base font-semibold tracking-tight text-neutral-900">
       Filters
       {activeCount > 0 && (
@@ -263,7 +259,7 @@ const SidebarHeader = ({ activeCount, onClearAll }) => (
       type="button"
       onClick={onClearAll}
       disabled={activeCount === 0}
-      className="rounded text-xs font-medium text-neutral-500 underline-offset-4 transition-colors hover:text-neutral-900 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f05a1a] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:no-underline"
+        className="rounded-md px-2 py-1.5 text-xs font-semibold text-neutral-500 transition-colors hover:bg-neutral-200/70 hover:text-neutral-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f05a1a] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
     >
       Clear all
     </button>
@@ -317,7 +313,7 @@ const FilterDrawer = ({ filters, onChange, onClearAll, onClose, activeCount, res
         role="dialog"
         aria-modal="true"
         aria-label="Filter vehicles"
-        className="absolute inset-y-0 left-0 flex w-[88%] max-w-sm flex-col bg-white"
+        className="absolute inset-y-0 left-0 flex w-[90%] max-w-md flex-col border-r border-neutral-200 bg-white shadow-2xl"
       >
         <div className="flex items-start justify-between gap-3 border-b border-neutral-200 px-5 pt-5">
           <div className="flex-1">
@@ -342,7 +338,7 @@ const FilterDrawer = ({ filters, onChange, onClearAll, onClose, activeCount, res
           <Button
             type="button"
             onClick={onClose}
-            className="h-10 w-full rounded-lg bg-[#f05a1a] text-xs font-semibold uppercase text-white hover:bg-[#d94e14]"
+            className="h-11 w-full rounded-xl bg-neutral-950 text-xs font-semibold uppercase tracking-wide text-white hover:bg-neutral-800 focus-visible:ring-[#f05a1a]"
           >
             Show {resultCount} {resultCount === 1 ? "vehicle" : "vehicles"}
             <ArrowRight className="size-3.5" />
@@ -367,10 +363,15 @@ const FilterSidebar = ({
     <>
       <aside
         aria-label="Filter vehicles"
-        className="hidden w-[280px] shrink-0 self-start rounded-2xl border border-neutral-200 bg-white p-5 lg:sticky lg:top-28 lg:block"
+        className="hidden w-[300px] shrink-0 self-start rounded-2xl border border-neutral-200 bg-white shadow-sm lg:sticky lg:top-28 lg:block"
       >
-        <SidebarHeader activeCount={activeCount} onClearAll={onClearAll} />
-        <FilterGroups idPrefix="sidebar" filters={filters} onChange={onChange} />
+        <div className="border-b border-neutral-200 bg-neutral-50 px-5 py-4">
+          <SidebarHeader activeCount={activeCount} onClearAll={onClearAll} />
+          <p className="mt-1 text-[11px] text-neutral-500">Narrow your results</p>
+        </div>
+        <div className="px-5 pb-2">
+          <FilterGroups idPrefix="sidebar" filters={filters} onChange={onChange} />
+        </div>
       </aside>
 
       {isDrawerOpen && (

@@ -4,11 +4,9 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
-    "db:schema": "node scripts/db-schema.js",
     "db:seed": "node scripts/seed.js",
+    "db:export-cars": "node scripts/export-frontend-cars.js",
     "images:upload": "node scripts/upload-car-images.js",
-    "db:migrate:google": "node scripts/db-google-migration.js",
-    "db:migrate:email": "node scripts/db-email-migration.js",
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
     "test": "node --test"
@@ -25,7 +23,8 @@
     "google-auth-library": "^11.3.2",
     "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.3",
-    "mysql2": "^3.24.6",
+    "mongoose": "^9.12.1",
+    "stripe": "^23.1.0",
     "zod": "^4.6.7"
   }
 }

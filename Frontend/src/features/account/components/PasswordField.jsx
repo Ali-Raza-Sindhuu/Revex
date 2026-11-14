@@ -15,7 +15,7 @@ const PasswordField = (props) => {
           type="button"
           aria-label={isVisible ? "Hide password" : "Show password"}
           onClick={() => setIsVisible((prev) => !prev)}
-          className="text-neutral-400 transition-colors hover:text-neutral-800"
+          className="text-white/35 transition-colors hover:text-white"
         >
           {isVisible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
         </button>

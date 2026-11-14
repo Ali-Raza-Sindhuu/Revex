@@ -2,7 +2,9 @@ import { useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Reveal } from "@/shared/motion";
 import { focusRing } from "@/shared/styles";
+import { apiRequest } from "@/lib/api";
 
 const enquiryTypes = [
   ["general", "General enquiry"], ["buying", "Buying a car"], ["rental", "Renting a car"],
@@ -19,6 +21,8 @@ const ContactForm = () => {
   const [values, setValues] = useState({ ...emptyValues, enquiry: initialEnquiry });
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const formRef = useRef(null);
   const successRef = useRef(null);
 
@@ -28,9 +32,7 @@ const ContactForm = () => {
     setErrors((previous) => ({ ...previous, [name]: undefined }));
   };
 
-  // DEMO SUBMISSION STUB: validates locally only. No request is sent or stored.
-  // Replace this branch with the approved enquiry endpoint when one is available.
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const nextErrors = {};
     if (values.fullName.trim().length < 2) nextErrors.fullName = "Please enter your full name.";
@@ -44,8 +46,17 @@ const ContactForm = () => {
       formRef.current?.elements.namedItem(Object.keys(nextErrors)[0])?.focus();
       return;
     }
-    setSubmitted(true);
-    requestAnimationFrame(() => successRef.current?.focus());
+    setIsSubmitting(true);
+    setSubmitError("");
+    try {
+      await apiRequest("/api/contact", { method: "POST", body: values });
+      setSubmitted(true);
+      requestAnimationFrame(() => successRef.current?.focus());
+    } catch (error) {
+      setSubmitError(error.message || "We couldn't send your enquiry. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const fieldProps = (name) => ({
@@ -56,19 +67,20 @@ const ContactForm = () => {
   const errorMessage = (name) => errors[name] && <p id={`contact-${name}-error`} className="mt-2 text-xs text-red-600">{errors[name]}</p>;
 
   return (
-    <section aria-labelledby="enquiry-title" className="min-w-0 rounded-2xl border border-neutral-200 bg-white p-6 md:p-8">
+    <Reveal as="section" y={24} aria-labelledby="enquiry-title" className="min-w-0 rounded-2xl border border-neutral-200 bg-white p-6 md:p-8">
       <h2 id="enquiry-title" className="text-2xl font-bold tracking-tight text-neutral-950">Let’s start a conversation.</h2>
       <p className="mt-3 text-sm leading-relaxed text-neutral-600">Tell us what you have in mind. A car, a question, or simply a place to start.</p>
       {submitted ? (
         <div ref={successRef} tabIndex={-1} className={`mt-8 rounded-xl bg-neutral-50 p-6 ${focusRing}`}>
           <Check aria-hidden="true" className="size-6 text-[#f05a1a]" />
           <h3 className="mt-4 text-lg font-semibold text-neutral-900">Your enquiry is ready.</h3>
-          <p role="status" className="mt-3 text-sm leading-relaxed text-neutral-600">The form passed validation. This is a demo: your message has not been sent or saved, and no reply will be issued.</p>
+          <p role="status" className="mt-3 text-sm leading-relaxed text-neutral-600">Your message has been saved. Our team will follow up using the contact details you provided.</p>
           <Button type="button" onClick={() => setSubmitted(false)} className="mt-6 h-10 rounded-lg bg-neutral-900 text-xs font-semibold text-white hover:bg-neutral-800 focus-visible:ring-[#f05a1a]">Edit enquiry</Button>
         </div>
       ) : (
         <form ref={formRef} onSubmit={handleSubmit} noValidate className="mt-8">
-          <p className="mb-6 text-[11px] text-neutral-500">All fields are required except phone. Demo form — nothing is sent.</p>
+          <p className="mb-6 text-[11px] text-neutral-500">All fields are required except phone.</p>
+          {submitError && <p role="alert" className="mb-4 text-xs text-red-600">{submitError}</p>}
           <div className="grid gap-5 sm:grid-cols-2">
             <div className="sm:col-span-2"><label htmlFor="contact-fullName" className="text-xs font-semibold text-neutral-900">Full name</label><input {...fieldProps("fullName")} required autoComplete="name" maxLength={120} placeholder="Your full name" className={inputClass} />{errorMessage("fullName")}</div>
             <div><label htmlFor="contact-email" className="text-xs font-semibold text-neutral-900">Email</label><input {...fieldProps("email")} required type="email" autoComplete="email" maxLength={254} placeholder="you@example.com" className={inputClass} />{errorMessage("email")}</div>
@@ -80,11 +92,10 @@ const ContactForm = () => {
             <label htmlFor="contact-consent" className="flex items-start gap-3 text-xs leading-relaxed text-neutral-600"><input id="contact-consent" name="consent" type="checkbox" required checked={values.consent} onChange={handleChange} aria-invalid={Boolean(errors.consent)} aria-describedby={errors.consent ? "contact-consent-error" : undefined} className={`mt-0.5 size-4 shrink-0 accent-[#f05a1a] ${focusRing}`} />I agree to REVEX contacting me about this enquiry using the details provided.</label>
             {errorMessage("consent")}
           </div>
-          <Button type="submit" className="mt-7 h-10 rounded-lg bg-[#f05a1a] px-5 text-xs font-semibold uppercase text-white hover:bg-[#d94e14] focus-visible:ring-[#f05a1a]">Submit enquiry<ArrowRight aria-hidden="true" className="size-3.5" /></Button>
+          <Button type="submit" disabled={isSubmitting} className="mt-7 h-10 rounded-lg bg-[#f05a1a] px-5 text-xs font-semibold uppercase text-white hover:bg-[#d94e14] focus-visible:ring-[#f05a1a] disabled:opacity-60">{isSubmitting ? "Sending…" : "Submit enquiry"}<ArrowRight aria-hidden="true" className="size-3.5" /></Button>
         </form>
       )}
-    </section>
+    </Reveal>
   );
 };
 export default ContactForm;
-

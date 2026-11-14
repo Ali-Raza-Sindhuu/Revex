@@ -36,4 +36,7 @@
 
 @layer base {
   body { @apply font-sans antialiased text-neutral-950; }
+  select { color-scheme: light; accent-color: #f05a1a; }
+  select option { background-color: #fff; color: #171717; }
+  select option:checked { background-color: #f05a1a; color: #fff; }
 }

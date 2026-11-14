@@ -1,4 +1,5 @@
-import { Globe } from "lucide-react";
+import { ArrowRight, Compass } from "lucide-react";
+import { Link } from "react-router-dom";
 import firstImage from "@/assets/about_01.png";
 import secondImage from "@/assets/about_02.png";
 import { Reveal } from "@/shared/motion";
@@ -15,9 +16,9 @@ const AboutSection = () => (
         id="about-title"
         align="center"
         eyebrow="About Revex"
-        lead={["We build more than cars."]}
-        muted={["We build the way forward."]}
-        body="At Revex, we believe a great automobile should do more than take you from one place to another. It should make every journey feel purposeful, connected, and unforgettable."
+        lead={["Your next move,"]}
+        muted={["made simpler."]}
+        body="Explore vehicles to buy or rent, compare the details that matter, and choose a next step that fits your plans."
         className="max-w-2xl"
       />
 
@@ -40,24 +41,19 @@ const AboutSection = () => (
           delay={0.1}
           className="flex min-h-[360px] flex-col justify-between rounded-2xl bg-neutral-900 p-6 text-white lg:row-span-2"
         >
-          <div className="text-center">
-            <p className="text-xs font-extrabold tracking-widest">REVEX</p>
-            <h3 className="mt-3 text-xl font-bold tracking-tight">
-              Built around the drive
-            </h3>
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#f05a1a]">The REVEX approach</p>
+            <h3 className="mt-3 text-2xl font-bold tracking-tight">Built around your next move.</h3>
           </div>
 
-          <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-widest text-white/70">
-            <span>Estd.</span>
-            <Globe className="size-12 text-white/30" strokeWidth={1} />
-            <span>2012 - 14</span>
+          <div className="flex items-center justify-between border-y border-white/10 py-4 text-[10px] font-semibold uppercase tracking-widest text-white/60">
+            <span>Discover</span><span aria-hidden="true" className="text-[#f05a1a]">/</span><span>Compare</span><span aria-hidden="true" className="text-[#f05a1a]">/</span><span>Go</span>
           </div>
 
-          <p className="text-xs leading-relaxed text-white/60">
-            At Revex, we think a great car should do more than transport you; it
-            should make every journey feel purposeful, connected, and
-            unforgettable.
-          </p>
+          <div>
+            <p className="text-sm leading-relaxed text-white/65">A clear place to browse vehicles, learn about your options, and get in touch when you’re ready.</p>
+            <Link to="/services" className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-white transition-colors hover:text-[#f05a1a]">Explore our services<ArrowRight aria-hidden="true" className="size-3.5" /></Link>
+          </div>
         </Reveal>
 
         <Reveal
@@ -73,27 +69,16 @@ const AboutSection = () => (
           />
           <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent" />
           <p className="absolute bottom-6 left-6 max-w-[180px] text-xl font-bold leading-snug tracking-tight text-white">
-            It&apos;s all about the vibe, you know?
+            Take the road that feels like yours.
           </p>
         </Reveal>
 
-        <Reveal
-          y={32}
-          delay={0.3}
-          className="flex min-h-[160px] flex-col justify-between rounded-2xl bg-[#f05a1a] p-6 text-white"
-        >
-          <div>
-            <p className="text-4xl font-bold tracking-tight md:text-5xl">48K+</p>
-            <p className="mt-1 text-xs text-white/80">
-              Various Vehicles on the Busy Road
-            </p>
+        <Reveal y={32} delay={0.3} className="flex min-h-[160px] flex-col justify-between rounded-2xl bg-[#f05a1a] p-6 text-white">
+          <div className="flex items-center justify-between gap-4">
+            <div><p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/75">Your next move starts here</p><p className="mt-2 text-xl font-bold tracking-tight">Find the drive that fits.</p></div>
+            <Compass aria-hidden="true" className="size-9 shrink-0 text-white/75" strokeWidth={1.4} />
           </div>
-          <a
-            href="mailto:info@revex.com"
-            className="mt-6 text-sm font-semibold hover:underline"
-          >
-            info@revex.com
-          </a>
+          <Link to="/inventory" className="mt-5 inline-flex w-fit items-center gap-2 text-sm font-semibold hover:underline">Explore inventory<ArrowRight aria-hidden="true" className="size-4" /></Link>
         </Reveal>
       </div>
     </div>

@@ -12,6 +12,7 @@ export const carListQuerySchema = z.object({
   listingType: z.enum(["buy", "rent"]).optional(),
   make: optionalText,
   model: optionalText,
+  location: z.string().trim().max(120).optional(),
   year: z.coerce.number().int().min(1886).max(2200).optional(),
   minPrice: optionalNumber,
   maxPrice: optionalNumber,

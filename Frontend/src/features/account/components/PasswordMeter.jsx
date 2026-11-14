@@ -1,9 +1,8 @@
-
 const strengthLevels = [
-  { label: "Idling", bar: "bg-red-500", text: "text-red-500" },
-  { label: "Cruising", bar: "bg-amber-500", text: "text-amber-600" },
-  { label: "Sport mode", bar: "bg-lime-500", text: "text-lime-600" },
-  { label: "Overdrive", bar: "bg-emerald-500", text: "text-emerald-600" },
+  { label: "Idling", bar: "bg-red-500", text: "text-red-400" },
+  { label: "Cruising", bar: "bg-amber-500", text: "text-amber-400" },
+  { label: "Sport mode", bar: "bg-lime-500", text: "text-lime-400" },
+  { label: "Overdrive", bar: "bg-emerald-500", text: "text-emerald-400" },
 ];
 
 const getStrength = (password) => {
@@ -27,7 +26,7 @@ const PasswordMeter = ({ password }) => {
           <span
             key={label}
             className={`h-1 flex-1 rounded-full transition-colors ${
-              index < filled ? level.bar : "bg-neutral-200"
+              index < filled ? level.bar : "bg-white/10"
             }`}
           />
         ))}

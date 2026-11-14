@@ -1,7 +1,7 @@
 const number = (value) => Number(value ?? 0);
 
 export const mapCar = (row) => ({
-  id: row.id,
+  id: row.id ?? row._id,
   make: row.make,
   model: row.model,
   yearRange: row.year_range,
@@ -18,6 +18,8 @@ export const mapCar = (row) => ({
   mileage: number(row.mileage),
   colour: row.colour,
   image: row.image_url,
+  location: row.details?.dealer?.city ?? "",
+  features: Array.isArray(row.features) ? row.features : [],
 });
 
 export const mapCarDetails = (row) => {

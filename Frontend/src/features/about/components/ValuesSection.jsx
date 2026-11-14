@@ -1,5 +1,6 @@
 import { ScanEye, Wrench, Gauge, HeartHandshake } from "lucide-react";
 import SectionHeading from "@/shared/SectionHeading";
+import { Reveal } from "@/shared/motion";
 
 const values = [
   { title: "Transparency", Icon: ScanEye, text: "Clear information before a commitment. We want you to understand the car, its history and the cost of your next step." },
@@ -12,10 +13,17 @@ const ValuesSection = () => (
     <div className="mx-auto max-w-[1400px]">
       <SectionHeading id="values-title" eyebrow="What drives us" lead={["Good cars."]} muted={["Even better standards."]} />
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {values.map(({ title, Icon, text }) => <article key={title} className="rounded-2xl border border-neutral-200 bg-white p-6"><Icon aria-hidden="true" strokeWidth={1.5} className="size-6 text-[#f05a1a]" /><h3 className="mt-8 text-xl font-bold tracking-tight text-neutral-950">{title}</h3><p className="mt-3 text-sm leading-relaxed text-neutral-600">{text}</p></article>)}
+        {values.map(({ title, Icon, text }, index) => (
+          <Reveal key={title} y={24} delay={index * 0.08}>
+            <article className="h-full rounded-2xl border border-neutral-200 bg-white p-6 transition-shadow duration-300 hover:shadow-lg hover:shadow-black/5">
+              <Icon aria-hidden="true" strokeWidth={1.5} className="size-6 text-[#f05a1a]" />
+              <h3 className="mt-8 text-xl font-bold tracking-tight text-neutral-950">{title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-neutral-600">{text}</p>
+            </article>
+          </Reveal>
+        ))}
       </div>
     </div>
   </section>
 );
 export default ValuesSection;
-

@@ -1,47 +1,31 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, createSearchParams, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
-  CircleDollarSign,
-  Headset,
-  Hourglass,
-  MapPin,
-  Navigation,
+  Check,
   Search,
 } from "lucide-react";
 import { Reveal } from "@/shared/motion";
 import SectionHeading from "@/shared/SectionHeading";
 import { btn, focusRing } from "@/shared/styles";
+import { apiRequest } from "@/lib/api";
 
-const perks = [
-  { icon: Headset, label: "24/7 Emergency Service" },
-  { icon: CircleDollarSign, label: "Affordable & Transparent Pricing" },
-  { icon: Hourglass, label: "Fast Response Time" },
-];
-
-const avatars = [
-  { src: "/image/search/avatar-1.jpg", color: "bg-orange-200" },
-  { src: "/image/search/avatar-2.jpg", color: "bg-neutral-300" },
-  { src: "/image/search/avatar-3.jpg", color: "bg-rose-200" },
-];
-
-const CustomerAvatar = ({ src, color }) => {
-  const [failed, setFailed] = useState(false);
-  return failed ? <span aria-hidden="true" className={`size-7 rounded-full border-2 border-white ${color}`} /> : <img src={src} alt="" loading="lazy" onError={() => setFailed(true)} className={`size-7 rounded-full border-2 border-white object-cover ${color}`} />;
-};
-
-const recentSearches = ["Downtown, Example City", "Riverside, Example City", "Airport Park, Example City"];
-
-const MAP_BLOCKS = [
-  [20, 30, 90, 60], [130, 20, 110, 70], [260, 30, 100, 60],
-  [30, 110, 80, 70], [130, 110, 100, 80], [250, 120, 110, 60],
-  [20, 205, 100, 70], [140, 215, 90, 60], [250, 200, 120, 75],
-];
+const perks = ["Compare vehicle details", "Choose buy or rent", "Reserve online"];
 
 const SearchCard = () => {
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const [query, setQuery] = useState("");
+  const [locations, setLocations] = useState([]);
+  const matchingLocations = locations.filter((location) => location.toLowerCase().includes(query.trim().toLowerCase())).slice(0, 6);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    apiRequest("/api/cars?page=1&pageSize=100", { signal: controller.signal })
+      .then(({ items }) => setLocations([...new Set(items.map((car) => car.details?.dealer?.city).filter(Boolean))].sort()))
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -50,9 +34,10 @@ const SearchCard = () => {
       inputRef.current?.focus();
       return;
     }
+    const city = location.includes(",") ? location.split(",").at(-1).trim() : location;
     navigate({
       pathname: "/inventory",
-      search: `?${createSearchParams({ condition: "used", location })}`,
+      search: `?${createSearchParams({ condition: "used", location: city })}`,
     });
   };
 
@@ -77,6 +62,7 @@ const SearchCard = () => {
             id="used-car-search"
             ref={inputRef}
             type="text"
+            maxLength={120}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search by city or area"
@@ -92,11 +78,9 @@ const SearchCard = () => {
         </button>
       </form>
 
-      <p className="mt-5 text-center text-xs font-semibold text-neutral-950">
-        Recent searches
-      </p>
+      <p className="mt-5 text-center text-xs font-semibold text-neutral-950">{query ? "Matching locations" : "Browse available locations"}</p>
       <ul className="mt-3 flex flex-wrap justify-center gap-2">
-        {recentSearches.map((place) => (
+        {matchingLocations.map((place) => (
           <li key={place}>
             <button
               type="button"
@@ -109,31 +93,8 @@ const SearchCard = () => {
         ))}
       </ul>
 
-      {/* Decorative map: faded street grid with a pin and a location marker */}
-      <div
-        aria-hidden="true"
-        className="relative mx-auto mt-6 aspect-[4/3] w-full overflow-hidden [mask-image:radial-gradient(ellipse_at_center,black_35%,transparent_72%)]"
-      >
-        <svg viewBox="0 0 400 300" className="absolute inset-0 size-full">
-          <rect width="400" height="300" fill="#fafafa" />
-          {MAP_BLOCKS.map(([x, y, w, h]) => (
-            <rect key={`${x}-${y}`} x={x} y={y} width={w} height={h} rx="4" fill="#efefef" />
-          ))}
-          <rect x="300" y="170" width="28" height="48" rx="6" fill="#d7f0dc" />
-        </svg>
-
-        <span className="absolute left-[24%] top-[30%] text-[8px] font-semibold text-neutral-800">
-          Whittier Street
-        </span>
-        <span className="absolute left-[24%] top-[58%] origin-left rotate-[14deg] text-[8px] font-semibold text-neutral-800">
-          Chesapeake Avenue
-        </span>
-        <MapPin className="absolute left-[18%] top-[52%] size-5 fill-[#f05a1a] text-white" />
-
-        <span className="absolute left-[68%] top-[34%] grid size-7 place-items-center rounded-full border-2 border-white bg-sky-500 shadow-md">
-          <Navigation className="size-3.5 fill-white text-white" />
-        </span>
-      </div>
+      {locations.length === 0 && <p className="mt-3 text-center text-xs text-neutral-500">Search inventory by city or area.</p>}
+      {locations.length > 0 && query && matchingLocations.length === 0 && <p className="mt-3 text-center text-xs text-neutral-500">No matching locations. You can still search this area.</p>}
     </div>
   );
 };
@@ -151,7 +112,7 @@ const UsedCarsSection = () => (
           eyebrow="Browse by search"
           lead={["Find your next"]}
           muted={["pre-owned drive"]}
-          body="Explore a curated selection of inspected, reliable used cars from trusted sellers near you."
+          body="Browse pre-owned listings, compare vehicle details, and narrow your search by location."
         />
 
         <Reveal delay={0.6}>
@@ -169,40 +130,20 @@ const UsedCarsSection = () => (
           className="mt-16 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between md:mt-24 lg:pr-16"
         >
           <ul className="flex flex-col gap-3">
-            {perks.map(({ icon: Icon, label }) => (
+            {perks.map((label) => (
               <li key={label} className="flex items-center gap-3 text-xs text-neutral-700">
-                <Icon strokeWidth={1.5} aria-hidden="true" className="size-4 text-[#f05a1a]" />
+                <Check strokeWidth={1.5} aria-hidden="true" className="size-4 text-[#f05a1a]" />
                 {label}
               </li>
             ))}
           </ul>
-
-          <div>
-            <p className="text-xs text-neutral-600">Satisfied customers</p>
-            <div className="mt-2 flex items-center gap-3">
-              <div className="flex -space-x-2">
-                {avatars.map(({ src, color }) => (
-                  <CustomerAvatar
-                    key={src}
-                    src={src}
-                    alt=""
-                    loading="lazy"
-                    className={`size-7 rounded-full border-2 border-white object-cover ${color}`}
-                  />
-                ))}
-              </div>
-              <p className="text-3xl font-bold tracking-tight text-neutral-950">
-                95K+
-              </p>
-            </div>
-          </div>
+          <p className="max-w-xs text-xs leading-relaxed text-neutral-500">Use the inventory filters to find vehicles that match your plans.</p>
         </Reveal>
       </div>
 
       <Reveal y={32} delay={0.15}>
         <div
-          style={{ backgroundImage: "url(/image/search/search-bg.jpg)" }}
-          className="mx-auto w-full max-w-[560px] rounded-2xl bg-neutral-900 bg-cover bg-center p-5 md:p-8 lg:ml-auto lg:mr-0"
+          className="mx-auto w-full max-w-[560px] rounded-2xl bg-neutral-900 p-5 md:p-8 lg:ml-auto lg:mr-0"
         >
           <SearchCard />
         </div>

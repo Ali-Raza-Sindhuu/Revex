@@ -1,0 +1,21 @@
+import PageHeader from "@/components/shared/PageHeader";
+import CtaBanner from "@/components/shared/CtaBanner";
+import heroImage from "@/assets/about_hero.png";
+import StorySection from "@/features/about/components/StorySection";
+import ValuesSection from "@/features/about/components/ValuesSection";
+import NumbersSection from "@/features/about/components/NumbersSection";
+import JourneySection from "@/features/about/components/JourneySection";
+import TeamSection from "@/features/about/components/TeamSection";
+
+const AboutPage = () => (
+  <>
+    <PageHeader title="About REVEX" breadcrumb="About" eyebrow="Built around the drive" description="A more considered way to find your next car, with people who care about the journey." heroImage={heroImage} />
+    <StorySection />
+    <ValuesSection />
+    <NumbersSection />
+    <JourneySection />
+    <TeamSection />
+    <CtaBanner heading="Your next chapter starts here." text="A daily companion or a weekend escape. Tell us what moves you and let’s find the right car together." buttonLabel="Start a conversation" href="/contact" />
+  </>
+);
+export default AboutPage;

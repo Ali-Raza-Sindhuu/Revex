@@ -15,7 +15,7 @@ const CarSummary = ({ car, details, onReserve, actionStatus = "" }) => {
   const rent = car.listingType === "rent";
   const actions = getCarActions(car, {
     onReserve,
-    onTestDrive: (event) => openEnquiry(event, { message: "I'd like to book a test drive." }),
+    onTestDrive: (event) => openEnquiry(event, { message: `I'd like to request a test drive for the ${car.year} ${car.make} ${car.model}.`, enquiryType: "test_drive" }),
   });
   const share = async () => {
     try {
@@ -40,11 +40,11 @@ const CarSummary = ({ car, details, onReserve, actionStatus = "" }) => {
         {specs.map(([Icon, label], index) => <li key={index} className="flex min-w-0 flex-col items-center gap-2 text-center text-[11px] text-neutral-500"><Icon aria-hidden="true" className="size-4 text-neutral-400" /><span className="break-words">{label}</span></li>)}
       </ul>
       <Button type="button" disabled={actions.primary.disabled} onClick={actions.primary.onClick} className="h-10 w-full rounded-lg bg-[#f05a1a] text-xs font-semibold text-white hover:bg-[#d94e14] focus-visible:ring-[#f05a1a] disabled:cursor-not-allowed disabled:opacity-50">{actions.primary.label}{!actions.primary.disabled && <ArrowRight aria-hidden="true" className="size-3.5" />}</Button>
-      {!actions.primary.disabled && <p className="mt-2 text-center text-[10px] text-neutral-500">Held only once payment is complete.</p>}
+      {!actions.primary.disabled && <p className="mt-2 text-center text-[10px] text-neutral-500">{rent ? "Rental dates are checked again at checkout." : "Adding this car saves it to your Garage shortlist."}</p>}
       {actionStatus && <p role="status" className="mt-2 text-center text-xs text-neutral-600">{actionStatus}</p>}
       <div className="mt-3 flex gap-2">
         {actions.secondary && <Button type="button" onClick={actions.secondary.onClick} className="h-10 flex-1 rounded-lg border border-neutral-200 bg-white text-xs font-semibold text-neutral-900 hover:bg-neutral-100 focus-visible:ring-[#f05a1a]">{actions.secondary.label}</Button>}
-        <Button type="button" onClick={(event) => openEnquiry(event)} className="h-10 flex-1 rounded-lg border border-neutral-200 bg-white text-xs font-semibold uppercase text-neutral-900 hover:bg-neutral-100 focus-visible:ring-[#f05a1a]">Enquire</Button>
+        <Button type="button" onClick={(event) => openEnquiry(event, { message: `I'm interested in the ${car.year} ${car.make} ${car.model}. Please contact me with more details.`, enquiryType: rent ? "rental" : "buying" })} className="h-10 flex-1 rounded-lg border border-neutral-200 bg-white text-xs font-semibold uppercase text-neutral-900 hover:bg-neutral-100 focus-visible:ring-[#f05a1a]">Enquire</Button>
         <FavouriteButton carId={car.id} className="size-10 border border-neutral-200" />
         <button type="button" aria-label="Copy vehicle page link" onClick={share} className={`grid size-10 shrink-0 place-items-center rounded-full border border-neutral-200 text-neutral-600 ${focusRing}`}><Share2 className="size-4" /></button>
       </div>

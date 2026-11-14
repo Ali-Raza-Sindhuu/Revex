@@ -1,18 +1,22 @@
+import mongoose from "mongoose";
 
-import mysql from "mysql2/promise";
-import dotenv from "dotenv";
+let connectionPromise;
 
-dotenv.config();
+export const connectDatabase = async () => {
+  if (mongoose.connection.readyState === 1) return mongoose.connection;
+  if (!process.env.MONGODB_URI) throw new Error("Missing required environment variable: MONGODB_URI");
+  if (!connectionPromise) {
+    connectionPromise = mongoose.connect(process.env.MONGODB_URI, {
+      dbName: process.env.MONGODB_DB_NAME || undefined,
+      bufferCommands: false,
+    }).catch((error) => {
+      connectionPromise = undefined;
+      throw error;
+    });
+  }
+  await connectionPromise;
+  return mongoose.connection;
+};
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+export const disconnectDatabase = () => mongoose.disconnect();
 
-export default pool;

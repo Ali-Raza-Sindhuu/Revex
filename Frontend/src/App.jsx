@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import SmoothScroll from "./components/layout/SmoothScroll";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
+import AppLoader from "./components/layout/AppLoader";
 import { clearGarageMessage } from "@/features/garage/garageSlice";
 
 const pageTitles = {
@@ -11,7 +12,12 @@ const pageTitles = {
   "/inventory": "Inventory",
   "/about": "About",
   "/services": "Services",
+  "/stories": "Stories",
+  "/innovation": "Innovation",
+  "/configurator": "Vehicle configurator",
   "/contact": "Contact",
+  "/privacy": "Privacy Policy",
+  "/terms": "Terms & Conditions",
   "/profile": "Profile",
   "/saved": "Saved cars",
   "/cart": "Garage",
@@ -29,18 +35,21 @@ const App = () => {
     }
   }, [pathname]);
   return (
-    <SmoothScroll>
-      <ScrollRestoration />
-      <Navbar />
-      <main>
-        <Outlet />
-      </main>
-      {garageMessage && <div role="status" className="fixed bottom-5 left-4 right-4 z-[60] mx-auto flex max-w-2xl items-start justify-between gap-4 rounded-xl border border-neutral-200 bg-white p-4 text-sm text-neutral-700 shadow-xl">
-        <p>{garageMessage}</p>
-        <button type="button" aria-label="Dismiss garage message" onClick={() => dispatch(clearGarageMessage())} className="shrink-0 font-semibold text-[#f05a1a]">Dismiss</button>
-      </div>}
-      <Footer />
-    </SmoothScroll>
+    <>
+      <AppLoader />
+      <SmoothScroll>
+        <ScrollRestoration />
+        <Navbar />
+        <main>
+          <Outlet />
+        </main>
+        {garageMessage && <div role="status" className="fixed bottom-5 left-4 right-4 z-[60] mx-auto flex max-w-2xl items-start justify-between gap-4 rounded-xl border border-neutral-200 bg-white p-4 text-sm text-neutral-700 shadow-xl">
+          <p>{garageMessage}</p>
+          <button type="button" aria-label="Dismiss garage message" onClick={() => dispatch(clearGarageMessage())} className="shrink-0 font-semibold text-[#f05a1a]">Dismiss</button>
+        </div>}
+        <Footer />
+      </SmoothScroll>
+    </>
   );
 };
 

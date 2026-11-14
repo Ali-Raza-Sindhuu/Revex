@@ -7,8 +7,9 @@ export const notFound = (req, res, next) => {
 export const errorHandler = (error, req, res, next) => {
   if (res.headersSent) return next(error);
 
-  const status = Number.isInteger(error.status) && error.status >= 400 && error.status < 600
-    ? error.status
+  const errorStatus = Number.isInteger(error.status) ? error.status : error.statusCode;
+  const status = Number.isInteger(errorStatus) && errorStatus >= 400 && errorStatus < 600
+    ? errorStatus
     : 500;
   if (status === 500) console.error("[api-error]", error);
 

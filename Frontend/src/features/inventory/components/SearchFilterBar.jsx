@@ -1,10 +1,13 @@
 import { RotateCcw, Search } from "lucide-react";
+import DarkSelect from "./DarkSelect";
 
 export const DEFAULT_SEARCH = {
   condition: "", // "" | "new" | "used"
   listingType: "all", // "all" | "buy" | "rent"
   make: "",
   model: "",
+  location: "",
+  query: "",
   year: "",
   price: "any",
 };
@@ -28,27 +31,12 @@ const LISTING_TYPES = [
   { id: "rent", label: "Rent Car" },
 ];
 
-const SelectField = ({ id, label, value, onChange, placeholder, options, disabled = false }) => (
+const SelectField = ({ id, label, value, onChange, placeholder, options, disabled = false, searchable = false }) => (
   <div className="flex flex-col gap-1.5">
     <label htmlFor={id} className="text-[11px] font-medium text-white/60">
       {label}
     </label>
-    <select
-      id={id}
-      value={value}
-      disabled={disabled}
-      onChange={(event) => onChange(event.target.value)}
-      className="h-9 w-full cursor-pointer border-b border-white/25 bg-transparent text-xs text-white focus-visible:border-[#f05a1a] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
-    >
-      <option value="" className="text-neutral-900">
-        {placeholder}
-      </option>
-      {options.map((option) => (
-        <option key={option.value} value={option.value} className="text-neutral-900">
-          {option.label}
-        </option>
-      ))}
-    </select>
+    <DarkSelect id={id} value={value} onChange={onChange} placeholder={placeholder} options={options} disabled={disabled} searchable={searchable} searchPlaceholder={`Search ${label.toLowerCase()}…`} />
   </div>
 );
 
@@ -123,6 +111,11 @@ const SearchFilterBar = ({
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-5 lg:grid-cols-[repeat(5,minmax(0,1fr))_auto] lg:items-end">
+            <label htmlFor="search-query" className="relative col-span-2 flex flex-col gap-1.5 lg:col-span-1">
+              <span className="text-[11px] font-medium text-white/60">Search inventory</span>
+              <Search aria-hidden="true" className="pointer-events-none absolute bottom-3 left-3 size-3.5 text-white/55" />
+              <input id="search-query" type="search" value={values.query || ""} onChange={(event) => onChange({ query: event.target.value })} placeholder="Make, model, or feature" className="h-10 w-full rounded-lg border border-white/25 bg-white/5 pl-9 pr-3 text-xs text-white placeholder:text-white/45 focus-visible:border-[#f05a1a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f05a1a]" />
+            </label>
             <SelectField
               id="search-make"
               label="Make"
@@ -130,6 +123,7 @@ const SearchFilterBar = ({
               onChange={(make) => onChange({ make, model: "" })}
               placeholder="Select make"
               options={makes.map((make) => ({ value: make, label: make }))}
+              searchable
             />
             <SelectField
               id="search-model"
@@ -139,6 +133,7 @@ const SearchFilterBar = ({
               placeholder={values.make ? "Select model" : "Choose make first"}
               options={models.map((model) => ({ value: model, label: model }))}
               disabled={!values.make}
+              searchable
             />
             <SelectField
               id="search-year"
@@ -147,8 +142,9 @@ const SearchFilterBar = ({
               onChange={(year) => onChange({ year })}
               placeholder="Any year"
               options={years.map((year) => ({ value: String(year), label: String(year) }))}
+              searchable
             />
-            <div className="col-span-2 lg:col-span-2">
+            <div className="col-span-2 lg:col-span-1">
               <SelectField
                 id="search-price"
                 label="Price range"

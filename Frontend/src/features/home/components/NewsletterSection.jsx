@@ -2,16 +2,25 @@ import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/shared/motion";
 import SectionHeading from "@/shared/SectionHeading";
+import { apiRequest } from "@/lib/api";
 
 const NewsletterSection = () => {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // TODO: connect to your newsletter endpoint
-    setEmail("");
-    setSent(true);
+    setIsSubmitting(true);
+    setError("");
+    try {
+      await apiRequest("/api/newsletter", { method: "POST", body: { email } });
+      setEmail("");
+      setSent(true);
+    } catch (requestError) {
+      setError(requestError.message || "Subscription failed. Please try again.");
+    } finally { setIsSubmitting(false); }
   };
 
   return (
@@ -47,20 +56,22 @@ const NewsletterSection = () => {
               onChange={(event) => {
                 setEmail(event.target.value);
                 setSent(false);
+                setError("");
               }}
               placeholder="Your email address"
               className="min-w-0 flex-1 bg-transparent text-xs text-white outline-none placeholder:text-white/40"
             />
             <button
               type="submit"
+              disabled={isSubmitting}
               aria-label="Subscribe"
               className="grid size-9 shrink-0 place-items-center rounded-full bg-[#f05a1a] text-white transition-colors duration-300 hover:bg-[#d94e14] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900"
             >
               <ArrowRight className="size-4" />
             </button>
           </form>
-          <p role="status" className="mt-3 h-4 text-xs text-white/60">
-            {sent ? "Thanks! You're on the list." : ""}
+          <p role={error ? "alert" : "status"} className="mt-3 min-h-4 text-xs text-white/60">
+            {error || (sent ? "Thanks! You're on the list." : "")}
           </p>
         </Reveal>
       </div>

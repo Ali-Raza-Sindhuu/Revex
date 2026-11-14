@@ -35,8 +35,8 @@ export const mergeCartController = async (req, res) => {
 };
 
 export const removeCartItemController = async (req, res) => {
-  const id = Number(req.params.id);
-  if (!Number.isSafeInteger(id) || id < 1) throw new AppError(400, "Invalid cart item id");
+  const id = req.params.id;
+  if (!/^[a-f\d]{24}$/i.test(id)) throw new AppError(400, "Invalid cart item id");
   await removeCartItem(req.userId, id);
   res.status(200).json({ message: "Cart item removed." });
 };

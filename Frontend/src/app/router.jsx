@@ -1,24 +1,31 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
+import { useEffect } from 'react'
 import App from '@/App'
-import HomePage from '@/features/home/HomePage'
-import InventoryPage from '@/features/inventory/InventoryPage'
-import CarDetailsPage from '@/features/inventory/details/CarDetailsPage'
-import ContactPage from '@/features/contact/ContactPage'
-import LoginPage from '@/features/account/LoginPage'
-import SignUpPage from '@/features/account/SignUpPage'
-import ForgotPasswordPage from '@/features/account/ForgotPasswordPage'
-import ResetPasswordPage from '@/features/account/ResetPasswordPage'
-import VerifyEmailPage from '@/features/account/VerifyEmailPage'
-import ProfilePage from '@/features/account/ProfilePage'
+import HomePage from '@/pages/home/HomePage'
+import InventoryPage from '@/pages/inventory/InventoryPage'
+import CarDetailsPage from '@/pages/inventory/CarDetailsPage'
+import ContactPage from '@/pages/contact/ContactPage'
+import LoginPage from '@/pages/account/LoginPage'
+import SignUpPage from '@/pages/account/SignUpPage'
+import ForgotPasswordPage from '@/pages/account/ForgotPasswordPage'
+import ResetPasswordPage from '@/pages/account/ResetPasswordPage'
+import VerifyEmailPage from '@/pages/account/VerifyEmailPage'
+import ProfilePage from '@/pages/account/ProfilePage'
 import ProtectedRoute from '@/features/account/ProtectedRoute'
-import AboutPage from '@/features/about/AboutPage'
-import ServicesPage from '@/features/services/ServicesPage'
-import NotFoundPage from '@/features/not-found/NotFoundPage'
-import RouteErrorPage from '@/features/not-found/RouteErrorPage'
-import GaragePage from '@/features/garage/GaragePage'
-import CheckoutPage from '@/features/garage/CheckoutPage'
-import CheckoutSuccessPage from '@/features/garage/CheckoutSuccessPage'
-import SavedCarsPage from '@/features/inventory/SavedCarsPage'
+import AboutPage from '@/pages/about/AboutPage'
+import ServicesPage from '@/pages/services/ServicesPage'
+import PrivacyPolicyPage from '@/pages/legal/PrivacyPolicyPage'
+import TermsPage from '@/pages/legal/TermsPage'
+import NotFoundPage from '@/pages/errors/NotFoundPage'
+import RouteErrorPage from '@/pages/errors/RouteErrorPage'
+import GaragePage from '@/pages/garage/GaragePage'
+import CheckoutPage from '@/pages/garage/CheckoutPage'
+import CheckoutSuccessPage from '@/pages/garage/CheckoutSuccessPage'
+import BookingsPage from '@/pages/garage/BookingsPage'
+import SavedCarsPage from '@/pages/inventory/SavedCarsPage'
+import StoriesPage from '@/pages/stories/StoriesPage'
+import InnovationPage from '@/pages/innovation/InnovationPage'
+import VehicleConfiguratorPage from '@/pages/configurator/VehicleConfiguratorPage'
 
 const AuthTitle = ({ title, children }) => {
   useEffect(() => { document.title = `${title} | REVEX` }, [title])
@@ -36,11 +43,17 @@ export const router = createBrowserRouter([
       { path: 'inventory/:id', element: <CarDetailsPage /> },
       { path: 'about', element: <AboutPage /> },
       { path: 'services', element: <ServicesPage /> },
+      { path: 'stories', element: <StoriesPage /> },
+      { path: 'innovation', element: <InnovationPage /> },
+      { path: 'configurator', element: <VehicleConfiguratorPage /> },
       { path: 'contact', element: <ContactPage /> },
+      { path: 'privacy', element: <PrivacyPolicyPage /> },
+      { path: 'terms', element: <TermsPage /> },
       { path: 'profile', element: <ProtectedRoute><ProfilePage /></ProtectedRoute> },
       { path: 'saved', element: <SavedCarsPage /> },
       { path: 'cart', element: <GaragePage /> },
       { path: 'checkout', element: <ProtectedRoute><CheckoutPage /></ProtectedRoute> },
+      { path: 'bookings', element: <ProtectedRoute><BookingsPage /></ProtectedRoute> },
       { path: 'checkout/success', element: <CheckoutSuccessPage /> },
       { path: 'account', element: <Navigate to="/login" replace /> },
       { path: '*', element: <NotFoundPage /> },
@@ -52,4 +65,3 @@ export const router = createBrowserRouter([
   { path: '/reset-password', element: <AuthTitle title="Reset password"><ResetPasswordPage /></AuthTitle> },
   { path: '/verify-email', element: <AuthTitle title="Verify email"><VerifyEmailPage /></AuthTitle> },
 ])
-import { useEffect } from 'react'

@@ -186,7 +186,7 @@ const Navbar = () => {
         <div className="w-full" style={{ maxWidth: 1240 }}>
           <motion.div
             animate={{
-              maxWidth: scrolled ? 980 : 1240,
+              maxWidth: scrolled ? 1120 : 1240,
               height: scrolled ? 52 : 60,
             }}
             transition={reduceMotion ? { duration: 0 } : { duration: 0.5, ease: EASE }}
@@ -222,7 +222,7 @@ const Navbar = () => {
                     onFocus={() => setHovered(item.key)}
                     onBlur={() => setHovered(null)}
                     aria-current={isActive ? "page" : undefined}
-                    className={`relative rounded-lg px-3.5 py-1.5 text-sm transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f05a1a] ${
+                    className={`relative rounded-lg py-1.5 transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f05a1a] ${scrolled ? "px-2 text-xs" : "px-3.5 text-sm"} ${
                       isActive
                         ? "font-semibold text-neutral-900"
                         : "text-neutral-500 hover:text-neutral-900"
@@ -250,17 +250,19 @@ const Navbar = () => {
 
             {/* Actions */}
             <div className="flex items-center gap-2">
-              <Link to="/cart" aria-label={`Garage, ${garageCount} items`} className="hidden h-9 items-center gap-1.5 rounded-lg border border-neutral-200 px-3 text-xs font-medium text-neutral-700 hover:bg-neutral-100 sm:inline-flex">
+              <Link to="/cart" aria-label={`Garage, ${garageCount} items`} title="Garage" className={`relative hidden h-9 items-center gap-1.5 rounded-lg border border-neutral-200 text-xs font-medium text-neutral-700 hover:bg-neutral-100 sm:inline-flex ${scrolled ? "w-9 justify-center px-0" : "px-3"}`}>
                 <CarFront aria-hidden="true" className="size-4" />
-                Garage <span className="rounded-full bg-neutral-100 px-1.5 py-0.5 text-[10px]">{garageCount}</span>
+                <span className={scrolled ? "sr-only" : ""}>Garage</span><span className={scrolled ? "absolute -right-1 -top-1 grid min-w-4 place-items-center rounded-full bg-[#f05a1a] px-1 py-0.5 text-[9px] text-white" : "rounded-full bg-neutral-100 px-1.5 py-0.5 text-[10px]"}>{garageCount}</span>
               </Link>
-              <Link to="/saved" className="hidden rounded-lg px-2 py-2 text-xs font-medium text-neutral-700 hover:bg-neutral-100 sm:inline-flex">Saved cars</Link>
+              <Link to="/saved" aria-label="Saved cars" title="Saved cars" className={`hidden h-9 items-center justify-center gap-1.5 rounded-lg text-xs font-medium text-neutral-700 hover:bg-neutral-100 sm:inline-flex ${scrolled ? "w-9 px-0" : "px-2"}`}>
+                <Bookmark aria-hidden="true" className="size-4" /><span className={scrolled ? "sr-only" : ""}>Saved cars</span>
+              </Link>
               <Button
                 asChild
-                className="group hidden h-9 rounded-lg bg-neutral-900 px-4 text-xs font-semibold text-white hover:bg-neutral-800 sm:inline-flex"
+                className={`group hidden h-9 rounded-lg bg-neutral-900 text-xs font-semibold text-white hover:bg-neutral-800 sm:inline-flex ${scrolled ? "px-3" : "px-4"}`}
               >
-                <Link to="/inventory" onClick={(e) => handleNavClick(e, NAV_ITEMS[1])}>
-                  Shop now
+                <Link to="/inventory" aria-label="Shop inventory" onClick={(e) => handleNavClick(e, NAV_ITEMS[1])}>
+                  <span className={scrolled ? "sr-only" : ""}>Shop now</span>
                   <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
                 </Link>
               </Button>
@@ -275,6 +277,7 @@ const Navbar = () => {
                     <AnimatePresence>
                       {accountOpen && <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="absolute right-0 top-12 z-50 w-56 rounded-xl border border-neutral-200 bg-white p-2 shadow-xl">
                         <Link to="/profile" className="block rounded-lg px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-100">Profile</Link>
+                        <Link to="/bookings" className="block rounded-lg px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-100">Booked cars</Link>
                         <Link to="/saved" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-100"><Bookmark className="size-4" />Saved cars</Link>
                         <Link to="/cart" className="flex items-center justify-between rounded-lg px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-100"><span className="flex items-center gap-2"><CarFront className="size-4" />Garage</span><span>{garageCount}</span></Link>
                         {garageCountError && <p role="status" className="px-3 py-2 text-[11px] text-red-600">Garage count unavailable: {garageCountError}</p>}
@@ -364,6 +367,7 @@ const Navbar = () => {
                       Garage <span className="rounded-full bg-neutral-100 px-2 py-1 text-xs">{garageCount}</span>
                     </Link>
                     <Link to="/saved" onClick={() => setMenuOpen(false)} className="mt-1 flex items-center rounded-xl px-4 py-3 text-base font-medium text-neutral-700 hover:bg-neutral-100">Saved cars</Link>
+                    {user && <Link to="/bookings" onClick={() => setMenuOpen(false)} className="mt-1 flex items-center rounded-xl px-4 py-3 text-base font-medium text-neutral-700 hover:bg-neutral-100">Booked cars</Link>}
                     <Link to={user ? "/profile" : "/login"} onClick={() => setMenuOpen(false)} className="mt-1 flex items-center rounded-xl px-4 py-3 text-base font-medium text-neutral-700 hover:bg-neutral-100">{user ? "Profile" : "Log in"}</Link>
                   </motion.li>
                   <motion.li variants={mobileItem} className="p-2 pt-3">

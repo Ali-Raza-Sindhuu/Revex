@@ -33,7 +33,7 @@ export const sendEmail = async ({ to, subject, html, text }) => {
   if (mailSender) return mailSender({ to, subject, html, text });
 
   if (emailMode() === "console") {
-    console.info(`[email:console] to=${to} subject="${subject}" ${text}`);
+    console.info(`[email:console] to=${to} subject="${subject}" (message body omitted)`);
     return { id: "console" };
   }
 

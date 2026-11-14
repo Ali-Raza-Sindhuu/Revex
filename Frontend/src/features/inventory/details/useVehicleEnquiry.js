@@ -2,12 +2,12 @@ import { useLenis } from "@/components/layout/SmoothScroll";
 
 export const useVehicleEnquiry = () => {
   const lenis = useLenis();
-  return (event, { message } = {}) => {
+  return (event, { message, enquiryType } = {}) => {
     const target = document.getElementById("vehicle-enquiry");
     if (!target) return;
     event.preventDefault();
     if (message) {
-      window.dispatchEvent(new CustomEvent("revex:vehicle-enquiry", { detail: { message } }));
+      window.dispatchEvent(new CustomEvent("revex:vehicle-enquiry", { detail: { message, enquiryType } }));
     }
     document.getElementById("enquiry-title")?.focus({ preventScroll: true });
     if (lenis) lenis.scrollTo(target, { offset: -112, immediate: true });
