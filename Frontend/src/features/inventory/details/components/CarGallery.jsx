@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { ArrowLeft, ArrowRight, Car } from "lucide-react";
 import { focusRing } from "@/shared/styles";
+import { optimizedImageUrl } from "@/lib/imageUrl";
 
-const GalleryImage = ({ src, fallback, alt }) => {
+const GalleryImage = ({ src, fallback, alt, width = 1200 }) => {
   const [failed, setFailed] = useState(false);
   const [fallbackFailed, setFallbackFailed] = useState(false);
   const image = failed ? fallback : src;
   return image && !fallbackFailed ? (
-    <img src={image} alt={alt} className="size-full object-contain p-4 md:p-8" onError={() => failed ? setFallbackFailed(true) : setFailed(true)} />
+    <img src={optimizedImageUrl(image, width)} alt={alt} loading="lazy" decoding="async" className="size-full object-contain p-4 md:p-8" onError={() => failed ? setFallbackFailed(true) : setFailed(true)} />
   ) : (
     <div className="flex size-full flex-col items-center justify-center gap-3 p-3 text-neutral-400" role="img" aria-label={alt + " — image unavailable"}>
       <Car aria-hidden="true" className="size-8 md:size-12" strokeWidth={1.5} />
@@ -33,7 +34,7 @@ const CarGallery = ({ car, gallery }) => {
       <div className="mt-4 grid grid-cols-4 gap-2 md:gap-3">
         {gallery.map((src, index) => (
           <button key={src} type="button" onClick={() => setActive(index)} aria-label={`View image ${index + 1} of ${label}`} aria-current={active === index ? "true" : undefined} className={`aspect-[4/3] min-w-0 overflow-hidden rounded-xl border bg-neutral-100 ${focusRing} ${active === index ? "border-[#f05a1a]" : "border-neutral-200"}`}>
-            <GalleryImage src={src} fallback={index === 0 ? car.image : undefined} alt="" />
+            <GalleryImage src={src} fallback={index === 0 ? car.image : undefined} alt="" width={320} />
           </button>
         ))}
       </div>
