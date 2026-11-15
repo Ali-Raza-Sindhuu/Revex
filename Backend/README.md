@@ -1,6 +1,6 @@
 # REVEX API
 
-Express API backed by MongoDB. The API is in `src/`, split into routes, controllers, services, middleware, validators, config, and Mongoose models. Vercel detects the Express app exported by `src/app.js`; `src/server.js` starts the local server.
+Express API backed by MongoDB. The API is in `src/`, split into routes, controllers, services, middleware, validators, config, and Mongoose models. Vercel detects the Express app exported by `src/app.js`; `src/local.js` starts the local server.
 
 ## Local setup
 

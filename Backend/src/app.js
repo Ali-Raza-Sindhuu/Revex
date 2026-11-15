@@ -35,10 +35,17 @@ const allowedOrigins = new Set([
   "http://localhost:5173",
   "http://127.0.0.1:5173",
 ]);
+const previewOriginPattern = /^https:\/\/carrevex[a-z0-9-]*\.vercel\.app$/;
+const isOriginAllowed = (origin) =>
+  !origin || allowedOrigins.has(origin) || previewOriginPattern.test(origin);
 
 app.use(helmet());
 app.use(cors({
-  origin: (origin, callback) => callback(null, !origin || allowedOrigins.has(origin)),
+  origin: (origin, callback) => {
+    const allowed = isOriginAllowed(origin);
+    if (!allowed) console.warn("CORS blocked origin:", origin);
+    callback(null, allowed);
+  },
   credentials: true,
 }));
 app.use(async (req, res, next) => {

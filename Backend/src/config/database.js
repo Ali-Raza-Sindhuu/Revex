@@ -1,22 +1,42 @@
 import mongoose from "mongoose";
 
-let connectionPromise;
-
 export const connectDatabase = async () => {
-  if (mongoose.connection.readyState === 1) return mongoose.connection;
-  if (!process.env.MONGODB_URI) throw new Error("Missing required environment variable: MONGODB_URI");
-  if (!connectionPromise) {
-    connectionPromise = mongoose.connect(process.env.MONGODB_URI, {
-      dbName: process.env.MONGODB_DB_NAME || undefined,
-      bufferCommands: false,
-    }).catch((error) => {
-      connectionPromise = undefined;
-      throw error;
-    });
+  const uri = process.env.MONGODB_URI;
+  if (!uri) throw new Error("Missing required environment variable: MONGODB_URI");
+
+  const cached = globalThis._mongoose ??= { conn: null, promise: null };
+  if (cached.conn && mongoose.connection.readyState === 1) return cached.conn;
+  if (cached.conn && mongoose.connection.readyState !== 1) {
+    cached.conn = null;
+    cached.promise = null;
   }
-  await connectionPromise;
-  return mongoose.connection;
+
+  cached.promise ??= mongoose.connect(uri, {
+    bufferCommands: false,
+    maxPoolSize: 5,
+    serverSelectionTimeoutMS: 8000,
+  });
+
+  try {
+    await cached.promise;
+    cached.conn = mongoose.connection;
+    return cached.conn;
+  } catch (error) {
+    cached.promise = null;
+    console.error("MongoDB connection failed:", error.message);
+    throw error;
+  }
 };
 
-export const disconnectDatabase = () => mongoose.disconnect();
+export const disconnectDatabase = async () => {
+  const cached = globalThis._mongoose ??= { conn: null, promise: null };
+  if (!cached.conn) return;
+
+  try {
+    await mongoose.disconnect();
+  } finally {
+    cached.conn = null;
+    cached.promise = null;
+  }
+};
 

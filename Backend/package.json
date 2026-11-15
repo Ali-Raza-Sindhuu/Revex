@@ -2,13 +2,13 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "src/server.js",
+  "main": "src/local.js",
   "scripts": {
     "db:seed": "node scripts/seed.js",
     "db:export-cars": "node scripts/export-frontend-cars.js",
     "images:upload": "node scripts/upload-car-images.js",
-    "dev": "node --watch src/server.js",
-    "start": "node src/server.js",
+    "dev": "node --watch src/local.js",
+    "start": "node src/local.js",
     "test": "node --test"
   },
   "keywords": [],

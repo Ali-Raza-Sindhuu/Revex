@@ -1,3 +1,4 @@
+// Local development entry only. Vercel uses app.js (export default app).
 import app from "./app.js";
 import { connectDatabase, disconnectDatabase } from "./config/database.js";
 
