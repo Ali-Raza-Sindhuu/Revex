@@ -84,7 +84,7 @@ const InventoryPage = () => {
   useEffect(() => {
     const controller = new AbortController();
     Promise.all([
-      apiRequest("/api/cars?page=1&pageSize=100", { signal: controller.signal }),
+      apiRequest("/api/cars?page=1&pageSize=100&sort=newest", { signal: controller.signal }),
       apiRequest("/api/cars/facets", { signal: controller.signal }),
     ]).then(([listing, availableFacets]) => {
       setCars(listing.items.map(mapCar));

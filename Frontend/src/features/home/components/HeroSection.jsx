@@ -13,6 +13,8 @@ const HeroSection = () => {
     <section className="relative flex min-h-svh w-full flex-col overflow-hidden bg-neutral-900 md:min-h-[780px]">
       <motion.img
         src={heroImage}
+        fetchPriority="high"
+        decoding="async"
         alt=""
         initial={reduce ? false : { scale: 1.08 }}
         animate={{ scale: 1 }}

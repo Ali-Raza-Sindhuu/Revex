@@ -25,12 +25,9 @@ const CategorySection = () => {
   useEffect(() => {
     const controller = new AbortController();
     apiRequest("/api/cars/facets", { signal: controller.signal })
-      .then(async ({ bodyTypes = [] }) => {
+      .then(({ bodyTypes = [], bodyTypeCounts = {} }) => {
         const availableCategories = categoryImages.filter(({ name }) => bodyTypes.includes(name));
-        const counted = await Promise.all(availableCategories.map(async (category) => {
-          const result = await apiRequest(`/api/cars?bodyType=${encodeURIComponent(category.name)}&pageSize=1`, { signal: controller.signal });
-          return { ...category, count: result.total };
-        }));
+        const counted = availableCategories.map((category) => ({ ...category, count: bodyTypeCounts[category.name] ?? 0 }));
         if (!controller.signal.aborted) {
           setCategories(counted);
           setError("");

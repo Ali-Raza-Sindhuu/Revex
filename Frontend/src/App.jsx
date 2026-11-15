@@ -1,11 +1,12 @@
 import { Outlet, ScrollRestoration, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SmoothScroll from "./components/layout/SmoothScroll";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import AppLoader from "./components/layout/AppLoader";
 import { clearGarageMessage } from "@/features/garage/garageSlice";
+import { apiRequest } from "@/lib/api";
 
 const pageTitles = {
   "/": "Home",
@@ -29,6 +30,34 @@ const App = () => {
   const { pathname } = useLocation();
   const dispatch = useDispatch();
   const garageMessage = useSelector((state) => state.garage.message);
+  const [initialDataReady, setInitialDataReady] = useState(false);
+  useEffect(() => {
+    let requests = [];
+    if (pathname === "/" || pathname === "/inventory") {
+      requests = [
+        apiRequest("/api/cars?page=1&pageSize=100&sort=newest"),
+        apiRequest("/api/cars/facets"),
+      ];
+    } else if (pathname === "/configurator") {
+      requests = [apiRequest("/api/cars?page=1&pageSize=100&sort=newest")];
+    } else if (pathname.startsWith("/inventory/")) {
+      const carId = pathname.slice("/inventory/".length);
+      if (carId) requests = [apiRequest(`/api/cars/${encodeURIComponent(carId)}`)];
+    }
+
+    Promise.allSettled(requests).then(() => new Promise((resolve) => {
+      // Let the route render its fetched content, then wait for images the
+      // visitor can see immediately. Offscreen images stay lazy-loaded.
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        const images = [...document.images].filter((image) => {
+          const bounds = image.getBoundingClientRect();
+          return bounds.bottom > 0 && bounds.top < window.innerHeight;
+        });
+        images.forEach((image) => { image.loading = "eager"; });
+        Promise.allSettled(images.map((image) => image.decode?.() ?? Promise.resolve())).then(resolve);
+      }));
+    })).then(() => setInitialDataReady(true));
+  }, []);
   useEffect(() => {
     if (!pathname.startsWith("/inventory/")) {
       document.title = `${pageTitles[pathname] ?? "Page not found"} | REVEX`;
@@ -36,7 +65,7 @@ const App = () => {
   }, [pathname]);
   return (
     <>
-      <AppLoader />
+      <AppLoader isReady={initialDataReady} />
       <SmoothScroll>
         <ScrollRestoration />
         <Navbar />

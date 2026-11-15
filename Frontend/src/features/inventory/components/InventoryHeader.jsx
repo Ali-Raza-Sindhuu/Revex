@@ -7,7 +7,7 @@ const InventoryHeader = ({ resultCount = 0 }) => {
 
   return (
     <header className="relative isolate overflow-hidden bg-neutral-900 pt-32 pb-8 md:pt-36 md:pb-10">
-      <img src={heroImage} alt="" aria-hidden="true" className="absolute inset-0 size-full object-cover object-[70%_center]" />
+      <img src={heroImage} alt="" aria-hidden="true" fetchPriority="high" decoding="async" className="absolute inset-0 size-full object-cover object-[70%_center]" />
       <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-neutral-950/95 via-neutral-900/75 to-neutral-900/45" />
       <div className="relative mx-auto max-w-[1400px] px-4 md:px-12">
         <nav aria-label="Breadcrumb">

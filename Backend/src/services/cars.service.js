@@ -21,21 +21,37 @@ export const listCars = async (query) => {
   const sort = { newest: { year: -1, created_at: -1, _id: 1 }, "price-asc": { price: 1, _id: 1 }, "price-desc": { price: -1, _id: 1 }, year: { year: 1, _id: 1 } }[query.sort];
   const [total, items] = await Promise.all([
     Car.countDocuments(filter),
-    Car.find(filter).sort(sort).skip((query.page - 1) * query.pageSize).limit(query.pageSize).lean(),
+    Car.find(filter)
+      .select("make model year_range year condition listing_type status price body_type fuel transmission cc bhp mileage colour image_url features details.dealer.city")
+      .sort(sort)
+      .skip((query.page - 1) * query.pageSize)
+      .limit(query.pageSize)
+      .lean(),
   ]);
   return { items: items.map((car) => ({ ...car, id: car._id })), total, page: query.page, pageCount: Math.ceil(total / query.pageSize) };
 };
 
 export const getCarFacets = async () => {
-  const [makes, modelRows, years, bodyTypes] = await Promise.all([
+  const [makes, modelRows, years, bodyTypes, bodyTypeRows] = await Promise.all([
     Car.distinct("make", { status: "available" }),
     Car.find({ status: "available" }).select("make model -_id").sort({ make: 1, model: 1 }).lean(),
-    Car.distinct("year", { status: "available" }), Car.distinct("body_type", { status: "available" }),
+    Car.distinct("year", { status: "available" }),
+    Car.distinct("body_type", { status: "available" }),
+    Car.aggregate([
+      { $match: { status: "available", body_type: { $nin: [null, ""] } } },
+      { $group: { _id: "$body_type", count: { $sum: 1 } } },
+    ]),
   ]);
   const modelsByMake = {};
   for (const row of modelRows) (modelsByMake[row.make] ??= []).push(row.model);
   for (const make of Object.keys(modelsByMake)) modelsByMake[make] = [...new Set(modelsByMake[make])];
-  return { makes: makes.sort(), modelsByMake, years: years.sort((a, b) => b - a), bodyTypes: bodyTypes.filter(Boolean).sort() };
+  return {
+    makes: makes.sort(),
+    modelsByMake,
+    years: years.sort((a, b) => b - a),
+    bodyTypes: bodyTypes.filter(Boolean).sort(),
+    bodyTypeCounts: Object.fromEntries(bodyTypeRows.map(({ _id, count }) => [_id, count])),
+  };
 };
 
 export const getCarById = async (carId) => {

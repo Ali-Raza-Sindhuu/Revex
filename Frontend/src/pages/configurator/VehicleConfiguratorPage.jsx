@@ -26,7 +26,7 @@ const VehicleConfiguratorPage = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    apiRequest("/api/cars?page=1&pageSize=100", { signal: controller.signal })
+    apiRequest("/api/cars?page=1&pageSize=100&sort=newest", { signal: controller.signal })
       .then(({ items }) => {
         const available = items.map(mapCar);
         setCars(available);
