@@ -3,13 +3,13 @@ import ShowroomPanel from "@/features/account/components/ShowroomPanel";
 
 const EASE = [0.22, 1, 0.36, 1];
 
-// Asymmetric editorial split, locked to the viewport - no card, no blur,
-// no scroll anywhere (page or form column). Content is sized to fit.
+// Desktop: locked to the viewport, no scroll.
+// Mobile: grows with content and scrolls, so nothing is clipped.
 const AuthShell = ({ word, eyebrow, headline, title, subtitle, children, footer }) => (
-  <main className="flex h-dvh flex-col overflow-hidden bg-neutral-950 lg:flex-row">
+  <main className="flex min-h-dvh flex-col bg-neutral-950 lg:h-dvh lg:flex-row lg:overflow-hidden">
     <ShowroomPanel word={word} eyebrow={eyebrow} headline={headline} />
 
-    <section className="flex min-h-0 flex-1 flex-col px-6 py-6 sm:px-12 sm:py-8 lg:px-16 lg:py-10">
+    <section className="flex flex-1 flex-col px-6 py-6 sm:px-12 sm:py-8 lg:min-h-0 lg:px-16 lg:py-10">
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -19,7 +19,7 @@ const AuthShell = ({ word, eyebrow, headline, title, subtitle, children, footer 
         REVEX <span className="h-px w-8 bg-white/15" /> Driver account
       </motion.p>
 
-      <div className="flex min-h-0 flex-1 flex-col justify-center overflow-hidden py-2">
+      <div className="flex flex-1 flex-col justify-center py-2 lg:min-h-0 lg:overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -43,7 +43,7 @@ const AuthShell = ({ word, eyebrow, headline, title, subtitle, children, footer 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.5 }}
-          className="shrink-0 pt-4 text-center text-xs text-white/40 lg:text-left"
+          className="shrink-0 pt-4 pb-[env(safe-area-inset-bottom)] text-center text-xs text-white/40 lg:text-left"
         >
           {footer}
         </motion.p>
