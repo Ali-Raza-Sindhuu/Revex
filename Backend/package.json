@@ -5,6 +5,7 @@
   "main": "src/local.js",
   "scripts": {
     "db:seed": "node scripts/seed.js",
+    "db:seed:remote": "node scripts/seed.js --confirm-remote",
     "db:export-cars": "node scripts/export-frontend-cars.js",
     "images:upload": "node scripts/upload-car-images.js",
     "dev": "node --watch src/local.js",
