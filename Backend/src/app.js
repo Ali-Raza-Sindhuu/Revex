@@ -22,11 +22,19 @@ if (missingRequiredEnvironment.length) {
 }
 configureCloudinary();
 const app = express();
-const configuredFrontendOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
-// CORS compares the browser's origin (scheme + host + port), not a full URL
-// with a trailing slash or a frontend path.
-const frontendOrigin = new URL(configuredFrontendOrigin).origin;
-const allowedOrigins = new Set([frontendOrigin, "http://localhost:5173", "http://127.0.0.1:5173"]);
+// Allow a comma-separated list so production and preview frontends can share
+// the API. Parse URLs to discard paths and trailing slashes before comparison.
+const configuredFrontendOrigins = (process.env.FRONTEND_URL || "http://localhost:5173")
+  .split(",")
+  .map((value) => value.trim())
+  .filter(Boolean)
+  .map((value) => new URL(value).origin);
+const allowedOrigins = new Set([
+  ...configuredFrontendOrigins,
+  "https://carrevex.vercel.app",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+]);
 
 app.use(helmet());
 app.use(cors({

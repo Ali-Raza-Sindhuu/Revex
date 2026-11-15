@@ -1,4 +1,6 @@
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
+// Normalize the configured origin so a trailing slash cannot produce URLs like
+// `https://api.example.com//api/cars` (which can bypass Vercel routing).
+const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000").replace(/\/+$/, "");
 
 export const apiRequest = async (path, { method = "GET", token, body, signal } = {}) => {
   const headers = {};
