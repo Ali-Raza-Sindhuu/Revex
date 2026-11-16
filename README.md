@@ -2,7 +2,7 @@
 
 REVEX is a full-stack vehicle marketplace for discovering cars to buy or rent. It combines a responsive React application with an Express API and MongoDB. Customers can browse vehicle listings, create an account, save cars, request test drives, and reserve rentals with Stripe Checkout.
 
-> **Project demo:** [Watch the demo video](demo/revex-website-demo.webm)
+
 
 ## Contents
 
